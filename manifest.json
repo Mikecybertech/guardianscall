@@ -1,0 +1,27 @@
+{
+  "name": "GuardiansCall · SentinelHaven AI",
+  "short_name": "GuardiansCall",
+  "description": "Two AI platforms: GuardiansCall airport accessibility and SentinelHaven H.A.V.E.N companion for cognitive support, loneliness, and caregiver assistance.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "categories": ["accessibility","health","travel","medical"],
+  "icons": [
+    {"src":"/guardianscall_logo.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"/guardianscall_logo.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ],
+  "shortcuts": [
+    {"name":"ARIA Companion",      "url":"/#passenger",    "description":"GC AI travel companion"},
+    {"name":"ADA Dictionary",      "url":"/#dictionary",   "description":"107-term ADA language guide"},
+    {"name":"H.A.V.E.N Companion", "url":"/#cc-companion", "description":"SentinelHaven AI chat"},
+    {"name":"Family Portal",       "url":"/#cc-family",    "description":"Wellness monitoring"},
+    {"name":"Caregiver Portal",    "url":"/#cc-caregiver", "description":"Care plan management"},
+    {"name":"Staff Portal",        "url":"/#login-staff",  "description":"Airport staff operations"}
+  ],
+  "related_applications": [
+    {"platform":"webapp","url":"https://sentinelhaven.com/sentinelhaven.html","id":"sentinelhaven"}
+  ]
+}

@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="SentinelHaven — H.A.V.E.N AI companion ecosystem for people with cognitive difficulties, loneliness, memory issues, and social isolation. Person · Family · Caregiver portals.">
+  <meta name="keywords" content="AI companion, cognitive support, loneliness, caregiver, memory, HAVEN, SentinelHaven, brain injury, social isolation">
+  <meta name="author" content="SentinelHaven · GuardiansCall">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SentinelHaven">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SentinelHaven · H.A.V.E.N AI Companion">
+  <meta property="og:description" content="An AI companion that remembers, listens, and supports. Voice + text. Life story memory. Wellness tracking. Caregiver tools.">
+  <meta property="og:url" content="https://sentinelhaven.com">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SentinelHaven — H.A.V.E.N AI · Digital Support Ecosystem">
+  <link rel="manifest" href="sentinel-manifest.json">
+  <title>SentinelHaven · H.A.V.E.N AI Companion</title>
+  <!-- React 18 -->
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow-x:hidden}
+    body{background:#f8f6ff;-webkit-font-smoothing:antialiased}
+    #root{min-height:100%}
+    #sh-splash{position:fixed;inset:0;background:linear-gradient(160deg,#f0edff,#f8f6ff);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity .6s ease}
+    #sh-splash.out{opacity:0;pointer-events:none}
+    .sh-ring{width:52px;height:52px;border:3px solid rgba(79,70,229,.15);border-top-color:#4f46e5;border-radius:50%;animation:sh-spin .9s linear infinite;margin-bottom:20px}
+    .sh-title{font-family:Georgia,serif;font-size:24px;color:#1e1b4b;margin-bottom:6px;letter-spacing:-.02em}
+    .sh-sub{font-family:Georgia,serif;font-size:13px;color:#6b7280;font-style:italic}
+    .sh-abbr{font-size:11px;color:#4f46e5;letter-spacing:.12em;font-weight:600;margin-top:4px;font-family:sans-serif}
+    @keyframes sh-spin{to{transform:rotate(360deg)}}
+    @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <div id="sh-splash" role="status" aria-label="Loading SentinelHaven">
+    <div class="sh-ring"></div>
+    <div class="sh-title">SentinelHaven</div>
+    <div class="sh-abbr">H · A · V · E · N</div>
+    <div class="sh-sub">Here for you. Always.</div>
+  </div>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react,env">
+  /* ================================================================
+     SentinelHaven · H.A.V.E.N AI  v2.0.0  (Standalone)
+     Built: 2026-06-09
+
+     H.A.V.E.N — Holistic AI Visitor Engagement Network
+     A digital support ecosystem for people with cognitive difficulties,
+     loneliness, memory issues, and social isolation.
+
+     Portals: Person · Family Member · Caregiver
+     Features: Voice+text AI · Memory timeline · Wellness tracking ·
+               Multi-agent system · Crisis detection · Reminders
+
+     Stack: React 18 · Claude AI · Microsoft Teams
+     HIPAA Aligned · WCAG 2.1 AA · ADA Compliant
+     © 2025 SentinelHaven / GuardiansCall
+  ================================================================ */
+  const { useState, useEffect, useRef, useCallback } = React;
+
+  const LOGO_ICON = "data:image/png;base64,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";
+
+  
+const StandaloneStyles = () => (
+  <style>{`
+    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Space+Mono:wght@400;700&display=swap');
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow-x:hidden;scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:#f8f6ff;color:#1e1b4b;-webkit-font-smoothing:antialiased;min-height:100%}
+    #root{min-height:100vh}
+    ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:rgba(79,70,229,.2);border-radius:2px}
+    button{cursor:pointer;border:none;outline:none;background:none;font-family:inherit}
+    input,textarea,select{font-family:inherit;outline:none}
+    a{color:inherit;text-decoration:none}
+    :root {
+      --cc-cream:#f8f6ff;--cc-white:#ffffff;
+      --cc-indigo:#4f46e5;--cc-indigo-dark:#3730a3;--cc-indigo-light:#818cf8;
+      --cc-violet:#7c3aed;--cc-violet-light:#a78bfa;
+      --cc-rose:#e11d48;--cc-rose-light:#fb7185;
+      --cc-sage:#059669;--cc-sage-light:#34d399;
+      --cc-amber-cc:#d97706;--cc-sky-cc:#0284c7;
+      --cc-text:#1e1b4b;--cc-muted:#6b7280;
+      --cc-border:rgba(79,70,229,0.12);
+      --cc-font:'DM Sans',sans-serif;--cc-serif:'DM Serif Display',serif;
+      --cc-radius:18px;--cc-radius-sm:12px;
+      --cc-shadow:0 4px 24px rgba(79,70,229,0.12);
+      --cc-shadow-lg:0 12px 48px rgba(79,70,229,0.18);
+      --border:rgba(148,163,184,.15);--glass:rgba(255,255,255,.04);--glass-border:rgba(255,255,255,.08);
+      --navy:#0a0e1a;--navy-mid:#111827;--navy-light:#1e2a3a;
+      --cobalt-bright:#2563eb;--sky:#3b82f6;--teal:#0d9488;--teal-bright:#14b8a6;
+      --red:#ef4444;--amber:#f59e0b;--green:#10b981;--muted:#94a3b8;
+    }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+    @keyframes typingDot{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+    @keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(79,70,229,.4)}70%{box-shadow:0 0 0 16px rgba(79,70,229,0)}100%{box-shadow:0 0 0 0 rgba(79,70,229,0)}}
+    .fade-up{animation:fadeUp .5s ease both} .fade-in{animation:fadeIn .4s ease both}
+    .pulse{animation:pulse 2s ease-in-out infinite} .spin{animation:spin .9s linear infinite}
+    .breathe{animation:breathe 4s ease-in-out infinite}
+    .cc-nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:all .3s}
+    .cc-nav--scrolled{background:rgba(248,246,255,.97);border-bottom:1px solid var(--cc-border);backdrop-filter:blur(16px);box-shadow:0 2px 16px rgba(79,70,229,.08)}
+    .cc-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:100px;font-size:15px;font-weight:600;transition:all .2s;border:none;cursor:pointer;font-family:var(--cc-font)}
+    .cc-btn--primary{background:var(--cc-indigo);color:white;box-shadow:0 4px 16px rgba(79,70,229,.35)}
+    .cc-btn--primary:hover{background:var(--cc-indigo-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,70,229,.45)}
+    .cc-btn--ghost{background:transparent;border:1.5px solid var(--cc-border);color:var(--cc-muted)}
+    .cc-btn--ghost:hover{border-color:var(--cc-indigo);color:var(--cc-indigo)}
+    .cc-btn--violet{background:var(--cc-violet);color:white}
+    .cc-btn--violet:hover{background:#6d28d9;transform:translateY(-2px)}
+    .cc-card{background:var(--cc-white);border:1px solid var(--cc-border);border-radius:var(--cc-radius);box-shadow:var(--cc-shadow);transition:all .2s}
+    .cc-card:hover{box-shadow:var(--cc-shadow-lg);transform:translateY(-2px)}
+    .cc-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:100px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+    .cc-tag--indigo{background:rgba(79,70,229,.1);border:1px solid rgba(79,70,229,.2);color:var(--cc-indigo)}
+    .cc-tag--violet{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:var(--cc-violet)}
+    .cc-tag--sage{background:rgba(5,150,105,.1);border:1px solid rgba(5,150,105,.2);color:var(--cc-sage)}
+    .cc-tag--rose{background:rgba(225,29,72,.1);border:1px solid rgba(225,29,72,.2);color:var(--cc-rose)}
+    .cc-input{width:100%;background:#f5f3ff;border:1.5px solid var(--cc-border);border-radius:var(--cc-radius-sm);padding:13px 16px;color:var(--cc-text);font-size:15px;font-family:var(--cc-font);transition:border-color .2s}
+    .cc-input:focus{border-color:var(--cc-indigo);background:white}
+    .cc-input::placeholder{color:var(--cc-muted);opacity:.7}
+    .cc-section{padding:90px 32px}
+    .cc-hero{min-height:100vh;display:flex;align-items:center;background:linear-gradient(160deg,#f0edff 0%,#f8f6ff 40%,#fff5f8 100%);padding-top:80px;position:relative;overflow:hidden}
+    .cc-hero::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(79,70,229,.08) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+    .cc-hero::after{content:'';position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(124,58,237,.06) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+    .cc-chat-bubble-ai{background:white;border:1px solid var(--cc-border);border-radius:18px 18px 18px 4px;padding:14px 18px;max-width:85%;font-size:15px;line-height:1.65;animation:fadeUp .4s ease both;box-shadow:0 2px 12px rgba(79,70,229,.08)}
+    .cc-chat-bubble-user{background:var(--cc-indigo);color:white;border-radius:18px 18px 4px 18px;padding:13px 18px;max-width:85%;font-size:15px;line-height:1.65;animation:fadeUp .4s ease both;margin-left:auto}
+    .haven-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--cc-indigo),var(--cc-violet));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px rgba(79,70,229,.3)}
+    .role-card{background:white;border:1px solid var(--cc-border);border-radius:var(--cc-radius);padding:28px;cursor:pointer;transition:all .25s}
+    .role-card:hover{border-color:var(--cc-indigo);box-shadow:var(--cc-shadow-lg);transform:translateY(-4px)}
+    .memory-dot{position:relative;padding-left:32px}
+    .memory-dot::before{content:'';position:absolute;left:0;top:8px;width:12px;height:12px;border-radius:50%;background:var(--cc-indigo);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+    .memory-dot::after{content:'';position:absolute;left:5px;top:20px;width:2px;height:calc(100% + 16px);background:rgba(79,70,229,.15)}
+    .memory-dot:last-child::after{display:none}
+    .cc-tab{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;padding:10px 4px;background:none;color:var(--cc-muted);font-size:10px;font-weight:600;transition:all .2s;border:none;cursor:pointer;font-family:var(--cc-font)}
+    .cc-tab.active{color:var(--cc-indigo)}
+    .haven-msg{max-width:84%;animation:fadeUp .3s ease}
+    .haven-msg-ai{background:white;border:1px solid var(--cc-border);border-radius:18px 18px 18px 4px;padding:13px 16px;font-size:15px;line-height:1.65;box-shadow:0 2px 8px rgba(79,70,229,.08)}
+    .haven-msg-user{background:var(--cc-indigo);color:white;border-radius:18px 18px 4px 18px;padding:12px 16px;font-size:15px;line-height:1.6;margin-left:auto}
+    .quick-reply{padding:8px 16px;border-radius:100px;border:1.5px solid var(--cc-border);background:white;color:var(--cc-indigo);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:var(--cc-font)}
+    .quick-reply:hover{background:var(--cc-indigo);color:white;border-color:var(--cc-indigo)}
+    .sym-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;font-size:13px;font-weight:500;border:1px solid;cursor:pointer;transition:all .2s}
+    .typing-dot{width:7px;height:7px;border-radius:50%;background:var(--cc-muted);display:inline-block;animation:typingDot 1.2s ease-in-out infinite}
+    .typing-dot:nth-child(2){animation-delay:.2s} .typing-dot:nth-child(3){animation-delay:.4s}
+    .mic-pulse{animation:pulseRing 2s ease-in-out infinite}
+    .teams-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;justify-content:center;align-items:center;z-index:10000;backdrop-filter:blur(4px)}
+    .agent-card{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:transparent;cursor:pointer;transition:all .2s;text-align:left;width:100%}
+    .agent-card.active{border-color:var(--cobalt-bright);background:rgba(37,99,235,.1)}
+    .glass-card{background:var(--glass);border:1px solid var(--glass-border);backdrop-filter:blur(12px);border-radius:16px}
+    @media(max-width:768px){.cc-section{padding:60px 20px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+    :focus-visible{outline:2px solid var(--cc-indigo);outline-offset:3px}
+  `}</style>
+);
+
+
+  // ─── MICROSOFT TEAMS LIVE SUPPORT SYSTEM ─────────────────────────────────────
+// Integrated Teams chat agent widget — ADA-compliant, accessible, production-ready
+// Supports: multi-agent routing, pre-chat form, chat history, dark/light aware,
+// Teams webhook notifications, ticket logging, keyboard trap, ARIA roles
+
+const SUPPORT_AGENTS = [
+  { id: "accessibility", name: "Accessibility Support", role: "ADA & Accessibility Specialist", avatar: "♿", teamsLink: "https://teams.microsoft.com/l/chat/0/0?users=accessibility@guardianscall.com", available: true },
+  { id: "tbi", name: "TBI Navigator", role: "Traumatic Brain Injury Support", avatar: "🧠", teamsLink: "https://teams.microsoft.com/l/chat/0/0?users=tbi@guardianscall.com", available: true },
+  { id: "crisis", name: "Crisis Response", role: "Emergency Coordination", avatar: "🚨", teamsLink: "https://teams.microsoft.com/l/chat/0/0?users=crisis@guardianscall.com", available: true },
+  { id: "general", name: "General Support", role: "Passenger Services", avatar: "✈️", teamsLink: "https://teams.microsoft.com/l/chat/0/0?users=support@guardianscall.com", available: true },
+];
+
+// ── In-memory ticket store (replace with real API/Supabase in production) ──
+const TICKET_STORE = [];
+
+function logTicket(data) {
+  const ticket = {
+    id: Date.now(),
+    ...data,
+    timestamp: new Date().toISOString(),
+  };
+  TICKET_STORE.unshift(ticket);
+  if (TICKET_STORE.length > 50) TICKET_STORE.pop();
+  // Persist to sessionStorage so it survives re-renders
+  try {
+    sessionStorage.setItem("gc_tickets", JSON.stringify(TICKET_STORE));
+  } catch {}
+  return ticket;
+}
+
+function loadTickets() {
+  try {
+    const stored = sessionStorage.getItem("gc_tickets");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      TICKET_STORE.splice(0, TICKET_STORE.length, ...parsed);
+    }
+  } catch {}
+  return TICKET_STORE;
+}
+
+// ── Support Widget (floating button) ──
+const SupportWidget = ({ onOpen, unreadCount }) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div style={{ position: "fixed", bottom: 28, right: 28, zIndex: 9990, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
+      <button
+        onClick={onOpen}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        aria-label="Open live support — GuardiansCall Teams Agent"
+        style={{
+          width: 60, height: 60, borderRadius: "50%",
+          background: "linear-gradient(135deg, #2563eb, #0d9488)",
+          border: "2px solid rgba(255,255,255,0.15)",
+          color: "white", cursor: "pointer",
+          boxShadow: hovered ? "0 8px 32px rgba(37,99,235,0.5)" : "0 4px 20px rgba(37,99,235,0.35)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "all 0.25s",
+          transform: hovered ? "scale(1.08)" : "scale(1)",
+          position: "relative",
+        }}
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        {unreadCount > 0 && (
+          <div style={{ position: "absolute", top: -4, right: -4, width: 18, height: 18, borderRadius: "50%", background: "#ef4444", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid #0a0e1a" }}>
+            {unreadCount}
+          </div>
+        )}
+      </button>
+      {hovered && (
+        <div style={{ background: "rgba(10,14,26,0.95)", border: "1px solid rgba(148,163,184,0.15)", borderRadius: 10, padding: "8px 14px", fontSize: 13, color: "#f8fafc", whiteSpace: "nowrap", backdropFilter: "blur(12px)", animation: "fadeUp 0.2s ease" }}>
+          💬 Live Support
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ── Pre-Chat Form Modal ──
+const SupportModal = ({ isOpen, onClose, onSubmit, loading }) => {
+  const modalRef = useRef(null);
+  const firstInputRef = useRef(null);
+  const [form, setForm] = useState({ name: "", email: "", issue: "", agent: "accessibility", urgency: "normal" });
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => firstInputRef.current?.focus(), 50);
+    }
+  }, [isOpen]);
+
+  // Keyboard trap for ADA compliance
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "Tab" && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll('button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
+          e.preventDefault();
+          (e.shiftKey ? last : first).focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [isOpen, onClose]);
+
+  const validate = () => {
+    const e = {};
+    if (!form.name.trim()) e.name = "Name is required";
+    if (!form.email.trim() || !form.email.includes("@")) e.email = "Valid email required";
+    if (!form.issue.trim()) e.issue = "Please describe your issue";
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const handleChange = (e) => {
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+    if (errors[e.target.name]) setErrors(er => ({ ...er, [e.target.name]: null }));
+  };
+
+  const handleSubmit = () => {
+    if (validate()) onSubmit(form);
+  };
+
+  if (!isOpen) return null;
+
+  const inputStyle = (field) => ({
+    width: "100%", background: "var(--navy-light)", border: `1px solid ${errors[field] ? "var(--red)" : "var(--border)"}`,
+    borderRadius: 10, padding: "11px 14px", color: "var(--white)", fontSize: 14,
+    marginTop: 6, outline: "none", fontFamily: "var(--font-body)", transition: "border-color 0.2s",
+    boxSizing: "border-box",
+  });
+  const labelStyle = { display: "block", fontSize: 13, color: "var(--muted)", fontWeight: 500, marginBottom: 12 };
+  const errStyle = { fontSize: 12, color: "var(--red)", marginTop: 3 };
+
+  return (
+    <div
+      role="dialog" aria-modal="true" aria-labelledby="supportModalTitle"
+      tabIndex="-1" ref={modalRef}
+      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.72)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 10000, backdropFilter: "blur(4px)" }}
+      onClick={e => e.target === e.currentTarget && onClose()}
+    >
+      <div style={{ background: "var(--navy-mid)", border: "1px solid var(--glass-border)", borderRadius: 20, width: "90%", maxWidth: 480, maxHeight: "90vh", overflowY: "auto", outline: "none", boxShadow: "0 24px 60px rgba(0,0,0,0.5), var(--shadow-glow)", animation: "fadeUp 0.3s ease" }}>
+        {/* Header */}
+        <div style={{ padding: "24px 24px 0", borderBottom: "1px solid var(--border)", paddingBottom: 20, display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #2563eb, #0d9488)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <h2 id="supportModalTitle" style={{ fontSize: 18, fontWeight: 700, fontFamily: "var(--font-display)", letterSpacing: "-0.01em" }}>Live Support</h2>
+            </div>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.5 }}>Connect with a GuardiansCall specialist via Microsoft Teams — real-time, encrypted, accessible.</p>
+          </div>
+          <button onClick={onClose} aria-label="Close support dialog" style={{ background: "rgba(148,163,184,0.12)", border: "none", color: "var(--muted)", width: 32, height: 32, borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginLeft: 12 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div style={{ padding: "20px 24px 24px" }}>
+          {/* Urgency selector */}
+          <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+            {[["normal","Normal","var(--teal-bright)"],["urgent","Urgent","var(--amber)"],["crisis","Crisis","var(--red)"]].map(([val, label, color]) => (
+              <button key={val} onClick={() => setForm(f => ({ ...f, urgency: val }))}
+                aria-pressed={form.urgency === val}
+                style={{ flex: 1, padding: "9px 8px", borderRadius: 10, border: `1px solid ${form.urgency === val ? color : "var(--border)"}`, background: form.urgency === val ? `${color}18` : "transparent", color: form.urgency === val ? color : "var(--muted)", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Agent selector */}
+          <label style={labelStyle}>
+            Select Support Specialist
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
+              {SUPPORT_AGENTS.map(a => (
+                <button key={a.id} onClick={() => setForm(f => ({ ...f, agent: a.id }))}
+                  aria-pressed={form.agent === a.id}
+                  style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 10, border: `1px solid ${form.agent === a.id ? "var(--cobalt-bright)" : "var(--border)"}`, background: form.agent === a.id ? "rgba(37,99,235,0.1)" : "transparent", cursor: "pointer", textAlign: "left", transition: "all 0.2s" }}>
+                  <div style={{ width: 34, height: 34, borderRadius: 10, background: form.agent === a.id ? "rgba(37,99,235,0.2)" : "var(--glass)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{a.avatar}</div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "var(--white)" }}>{a.name}</div>
+                    <div style={{ fontSize: 12, color: "var(--muted)" }}>{a.role}</div>
+                  </div>
+                  <div style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: a.available ? "var(--green)" : "var(--muted)", flexShrink: 0 }} />
+                </button>
+              ))}
+            </div>
+          </label>
+
+          {/* Form fields */}
+          <label style={labelStyle}>
+            Your Name *
+            <input ref={firstInputRef} name="name" value={form.name} onChange={handleChange} placeholder="How should we address you?" aria-required="true" aria-invalid={!!errors.name} style={inputStyle("name")} />
+            {errors.name && <div style={errStyle}>{errors.name}</div>}
+          </label>
+
+          <label style={labelStyle}>
+            Email Address *
+            <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="your@email.com" aria-required="true" aria-invalid={!!errors.email} style={inputStyle("email")} />
+            {errors.email && <div style={errStyle}>{errors.email}</div>}
+          </label>
+
+          <label style={labelStyle}>
+            How can we help? *
+            <textarea name="issue" value={form.issue} onChange={handleChange} placeholder="Describe your situation — there's no wrong answer." aria-required="true" aria-invalid={!!errors.issue} rows={3} style={{ ...inputStyle("issue"), resize: "vertical", minHeight: 80, lineHeight: 1.5 }} />
+            {errors.issue && <div style={errStyle}>{errors.issue}</div>}
+          </label>
+
+          {/* ADA note */}
+          <div style={{ background: "rgba(13,148,136,0.06)", border: "1px solid rgba(13,148,136,0.2)", borderRadius: 10, padding: "10px 14px", marginBottom: 18, fontSize: 12, color: "var(--teal-bright)", display: "flex", gap: 8, alignItems: "start", lineHeight: 1.5 }}>
+            <span>♿</span>
+            <span>All support sessions are ADA-compliant. TTY available. ASL interpreters on request. Take all the time you need.</span>
+          </div>
+
+          <button onClick={handleSubmit} disabled={loading}
+            style={{ width: "100%", padding: "14px", background: loading ? "var(--navy-light)" : "linear-gradient(135deg, var(--cobalt-bright), var(--teal))", color: "white", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, transition: "all 0.2s", marginBottom: 10 }}>
+            {loading ? (
+              <><div style={{ width: 16, height: 16, border: "2px solid white", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} /> Connecting to Teams...</>
+            ) : (
+              <><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Start Live Support in Teams</>
+            )}
+          </button>
+          <button onClick={onClose} style={{ width: "100%", padding: "12px", background: "transparent", border: "1px solid var(--border)", borderRadius: 12, color: "var(--muted)", fontSize: 14, cursor: "pointer" }}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ── Support History Modal ──
+const SupportHistory = ({ isOpen, onClose }) => {
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    if (isOpen) setItems(loadTickets());
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  const urgencyColor = { normal: "var(--teal-bright)", urgent: "var(--amber)", crisis: "var(--red)" };
+
+  return (
+    <div role="dialog" aria-modal="true" aria-labelledby="historyTitle" tabIndex="-1"
+      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.72)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 10000, backdropFilter: "blur(4px)" }}
+      onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "var(--navy-mid)", border: "1px solid var(--glass-border)", borderRadius: 20, width: "90%", maxWidth: 520, maxHeight: "80vh", display: "flex", flexDirection: "column", animation: "fadeUp 0.3s ease", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+        <div style={{ padding: "22px 24px 18px", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+          <h2 id="historyTitle" style={{ fontFamily: "var(--font-display)", fontSize: 20 }}>Support History</h2>
+          <button onClick={onClose} aria-label="Close history" style={{ background: "rgba(148,163,184,0.12)", border: "none", color: "var(--muted)", width: 32, height: 32, borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div style={{ overflowY: "auto", flex: 1, padding: "16px 24px 24px" }}>
+          {items.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "48px 0", color: "var(--muted)" }}>
+              <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
+              <div>No previous support requests yet.</div>
+            </div>
+          ) : items.map(item => {
+            const agent = SUPPORT_AGENTS.find(a => a.id === item.agent) || { name: item.agent, avatar: "👤" };
+            return (
+              <div key={item.id} style={{ borderBottom: "1px solid var(--border)", padding: "14px 0" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 8 }}>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <span style={{ fontSize: 16 }}>{agent.avatar}</span>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 600 }}>{item.name}</div>
+                      <div style={{ fontSize: 12, color: "var(--muted)" }}>{agent.name} · {new Date(item.timestamp).toLocaleString()}</div>
+                    </div>
+                  </div>
+                  <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 100, background: `${urgencyColor[item.urgency] || "var(--sky)"}18`, border: `1px solid ${urgencyColor[item.urgency] || "var(--sky)"}40`, color: urgencyColor[item.urgency] || "var(--sky)", textTransform: "capitalize" }}>{item.urgency}</span>
+                </div>
+                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, margin: 0 }}>{item.issue}</p>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ padding: "0 24px 20px", flexShrink: 0 }}>
+          <button onClick={onClose} style={{ width: "100%", padding: "12px", background: "transparent", border: "1px solid var(--border)", borderRadius: 12, color: "var(--muted)", fontSize: 14, cursor: "pointer" }}>Close</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ── Confirmation Toast ──
+const SupportConfirmation = ({ ticket, onDismiss }) => {
+  useEffect(() => {
+    const t = setTimeout(onDismiss, 6000);
+    return () => clearTimeout(t);
+  }, []);
+  const agent = SUPPORT_AGENTS.find(a => a.id === ticket?.agent);
+  return (
+    <div style={{ position: "fixed", bottom: 100, right: 28, zIndex: 9995, animation: "slideIn 0.4s ease", maxWidth: 320 }}>
+      <div style={{ background: "var(--navy-mid)", border: "1px solid rgba(16,185,129,0.3)", borderRadius: 14, padding: "16px 18px", boxShadow: "0 8px 32px rgba(0,0,0,0.4)" }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "start" }}>
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(16,185,129,0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--green)", flexShrink: 0 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "var(--green)", marginBottom: 4 }}>Teams session opening…</div>
+            <div style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.5 }}>
+              Connecting you to <strong style={{ color: "var(--white)" }}>{agent?.name}</strong>. Ticket #{ticket?.id?.toString().slice(-4)} logged.
+            </div>
+          </div>
+          <button onClick={onDismiss} style={{ background: "none", border: "none", color: "var(--muted)", cursor: "pointer", padding: 2 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ── Main LiveSupport Controller ──
+const LiveSupport = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [confirmation, setConfirmation] = useState(null);
+  const [ticketCount, setTicketCount] = useState(0);
+
+  useEffect(() => {
+    loadTickets();
+    setTicketCount(TICKET_STORE.length);
+  }, []);
+
+  const handleSubmit = async (form) => {
+    setLoading(true);
+    // Simulate async ticket logging (replace with real API call)
+    await new Promise(r => setTimeout(r, 900));
+    const ticket = logTicket(form);
+    setTicketCount(c => c + 1);
+    setLoading(false);
+    setModalOpen(false);
+
+    // Open Teams link
+    const agent = SUPPORT_AGENTS.find(a => a.id === form.agent);
+    if (agent?.teamsLink) {
+      window.open(agent.teamsLink, "_blank", "noopener,noreferrer");
+    }
+
+    setConfirmation(ticket);
+
+    // Optional: fire Teams webhook (would be server-side in production)
+    // Teams webhook payload would go here
+  };
+
+  return (
+    <>
+      <SupportWidget onOpen={() => setModalOpen(true)} unreadCount={0} />
+
+      {/* Context menu above widget */}
+      <div style={{ position: "fixed", bottom: 98, right: 28, zIndex: 9989, display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-end" }}>
+        <button onClick={() => setHistoryOpen(true)}
+          aria-label="View support history"
+          style={{ background: "rgba(10,14,26,0.88)", border: "1px solid var(--border)", color: "var(--muted)", padding: "6px 14px", borderRadius: 100, fontSize: 12, cursor: "pointer", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", gap: 6 }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          History
+        </button>
+      </div>
+
+      <SupportModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSubmit={handleSubmit} loading={loading} />
+      <SupportHistory isOpen={historyOpen} onClose={() => setHistoryOpen(false)} />
+      {confirmation && <SupportConfirmation ticket={confirmation} onDismiss={() => setConfirmation(null)} />}
+    </>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TBI CAREGIVER SUPPORT PLATFORM COMPONENTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CARECOMPANION AI — Digital Support Ecosystem  v1.0
+// AI companion for people with cognitive difficulties, loneliness,
+// memory issues, and social isolation. Full caregiver + family portal.
+// ═══════════════════════════════════════════════════════════════════════════
+
+  // ─── CC Icon Helper ───────────────────────────────────────────────────────
+const CCIcon = ({ name, size=20, color="currentColor" }) => {
+  const d = {
+    heart:    "M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z",
+    mic:      "M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zM19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8",
+    send:     "M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z",
+    user:     "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+    users:    "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75",
+    bell:     "M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9 M13.73 21a2 2 0 0 1-3.46 0",
+    calendar: "M3 9h18M3 4h18a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M16 2v4M8 2v4",
+    brain:    "M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2z M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2z",
+    clock:    "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 6v6l4 2",
+    check:    "M20 6L9 17l-5-5",
+    plus:     "M12 5v14M5 12h14",
+    x:        "M18 6L6 18M6 6l12 12",
+    star:     "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+    chart:    "M18 20V10M12 20V4M6 20v-6",
+    book:     "M4 19.5A2.5 2.5 0 0 1 6.5 17H20 M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z",
+    map:      "M3 6l9-3 9 3v12l-9 3-9-3V6z M12 3v18",
+    shield:   "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+    home:     "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z M9 22V12h6v10",
+    settings: "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",
+    phone:    "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12 19.79 19.79 0 0 1 1.94 3.42 2 2 0 0 1 3.92 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z",
+    alert:    "M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z M12 9v4M12 17h.01",
+    sun:      "M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42",
+    leaf:     "M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12",
+    wave:     "M2 12c.6-5 5.4-8 10-8 4.6 0 9.4 3 10 8 M2 12c.6 5 5.4 8 10 8 4.6 0 9.4-3 10-8",
+    logout:   "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4 M16 17l5-5-5-5 M21 12H9",
+    edit:     "M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7 M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z",
+    link:     "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71 M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
+    trash:    "M3 6h18 M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2 M19 6l-1 14H6L5 6",
+    eye:      "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z",
+    activity: "M22 12h-4l-3 9L9 3l-3 9H2",
+  };
+  const paths = (d[name] || "").split(" M ").filter(Boolean);
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      {paths.map((p, i) => <path key={i} d={(i === 0 ? "" : "M ") + p} />)}
+    </svg>
+  );
+};
+
+  
+
+  // ─── SentinelHaven Claude API ─────────────────────────────────────────────
+async function callCompanionAI(messages, systemPrompt, onChunk) {
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 1000,
+      system: systemPrompt,
+      stream: true,
+      messages,
+    }),
+  });
+  if (!response.ok) throw new Error(`API error: ${response.status}`);
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let full = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const lines = decoder.decode(value).split("\n").filter(l => l.startsWith("data: "));
+    for (const line of lines) {
+      try {
+        const data = JSON.parse(line.slice(6));
+        if (data.type === "content_block_delta" && data.delta?.text) {
+          full += data.delta.text;
+          onChunk(full);
+        }
+      } catch {}
+    }
+  }
+  return full;
+}
+
+// ─── System Prompts ───────────────────────────────────────────────────────
+const COMPANION_SYSTEM = (profile) => `You are a warm, patient AI companion called H.A.V.E.N — part of the SentinelHaven system. You support people with cognitive difficulties, loneliness, memory issues, and social isolation.
+
+ABOUT THIS PERSON:
+Name: ${profile.name || "Friend"}
+Conditions/Notes: ${profile.conditions || "Not specified"}
+Favorite topics: ${profile.favoriteTopics || "General conversation"}
+Important people: ${profile.importantPeople || "Not specified"}
+Life memories: ${(profile.memories || []).map(m => `${m.year}: ${m.event}`).join(", ") || "None recorded yet"}
+
+YOUR APPROACH:
+- Speak warmly, simply, and naturally. Short sentences. One idea at a time.
+- Never overwhelm. Never lecture. Never sound clinical.
+- Reference their memories and life story naturally when relevant.
+- Ask ONE follow-up question per response.
+- Gently detect loneliness, confusion, distress, or crisis language.
+- If crisis detected: respond with compassion and escalate (suggest calling family/988).
+- Encourage human connection — suggest calling family, joining activities.
+- You are a bridge to human connection, not a replacement for it.
+- End every response with one clear, warm next step or question.`;
+
+const WELLNESS_SYSTEM = `You are a wellness analyst for SentinelHaven. Given mood logs and conversation summaries, produce a brief, warm weekly summary for family members or caregivers. Focus on: patterns, highlights, concerns, and suggested actions. Use plain language. Max 150 words.`;
+
+// ─── Sample/Demo Data ─────────────────────────────────────────────────────
+const DEFAULT_PROFILE = {
+  name: "John",
+  conditions: "Mild cognitive impairment, social isolation",
+  favoriteTopics: "Fishing, family stories, gardening",
+  importantPeople: "Daughter Sarah, grandson Tommy",
+  memories: [
+    { id:1, year:"1975", event:"First job at the shipyard", category:"Work" },
+    { id:2, year:"1982", event:"Married Margaret", category:"Family" },
+    { id:3, year:"1995", event:"Built the house on Maple Street", category:"Home" },
+    { id:4, year:"2008", event:"Retired after 33 years", category:"Work" },
+    { id:5, year:"2014", event:"Granddaughter Emma born", category:"Family" },
+    { id:6, year:"2019", event:"Started the garden on the back porch", category:"Hobbies" },
+    { id:7, year:"2023", event:"Moved to Florida", category:"Home" },
+  ]
+};
+
+const ACTIVITY_SUGGESTIONS = [
+  { id:1, title:"Morning Memory Game", desc:"3 minutes of simple word recall", icon:"🧩", duration:"3 min", category:"cognitive" },
+  { id:2, title:"Call a Family Member", desc:"Just say hello — connection matters", icon:"📞", duration:"10 min", category:"social" },
+  { id:3, title:"Short Walk Outside", desc:"Fresh air improves mood and memory", icon:"🌿", duration:"15 min", category:"physical" },
+  { id:4, title:"Write One Memory", desc:"Record a story from your past", icon:"✍️", duration:"10 min", category:"memory" },
+  { id:5, title:"Listen to Favorite Music", desc:"Music stimulates memory and emotion", icon:"🎵", duration:"20 min", category:"wellbeing" },
+  { id:6, title:"Photo Reflection", desc:"Look at an old photo and share a story", icon:"📷", duration:"10 min", category:"memory" },
+  { id:7, title:"Gentle Stretching", desc:"Simple seated exercises for energy", icon:"🤸", duration:"10 min", category:"physical" },
+  { id:8, title:"Today's Gratitude", desc:"Name one thing that made you smile", icon:"🌟", duration:"2 min", category:"wellbeing" },
+];
+
+const REMINDER_TEMPLATES = [
+  { title:"Morning Medication", time:"08:00", repeat:"daily", icon:"💊", category:"health" },
+  { title:"Evening Medication", time:"20:00", repeat:"daily", icon:"💊", category:"health" },
+  { title:"Daily Check-in with H.A.V.E.N", time:"10:00", repeat:"daily", icon:"💬", category:"wellness" },
+  { title:"Call family member", time:"15:00", repeat:"weekly", icon:"📞", category:"social" },
+  { title:"Afternoon Walk", time:"14:00", repeat:"daily", icon:"🌿", category:"physical" },
+];
+
+// ─── CC Icon Helper ───────────────────────────────────────────────────────
+const CCIcon = ({ name, size=20, color="currentColor" }) => {
+  const d = {
+    heart:    "M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z",
+    mic:      "M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zM19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8",
+    send:     "M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z",
+    user:     "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+    users:    "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75",
+    bell:     "M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9 M13.73 21a2 2 0 0 1-3.46 0",
+    calendar: "M3 9h18M3 4h18a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M16 2v4M8 2v4",
+    brain:    "M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2z M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2z",
+    clock:    "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 6v6l4 2",
+    check:    "M20 6L9 17l-5-5",
+    plus:     "M12 5v14M5 12h14",
+    x:        "M18 6L6 18M6 6l12 12",
+    star:     "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+    chart:    "M18 20V10M12 20V4M6 20v-6",
+    book:     "M4 19.5A2.5 2.5 0 0 1 6.5 17H20 M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z",
+    map:      "M3 6l9-3 9 3v12l-9 3-9-3V6z M12 3v18",
+    shield:   "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+    home:     "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z M9 22V12h6v10",
+    settings: "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",
+    phone:    "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12 19.79 19.79 0 0 1 1.94 3.42 2 2 0 0 1 3.92 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z",
+    alert:    "M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z M12 9v4M12 17h.01",
+    sun:      "M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42",
+    leaf:     "M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12",
+    wave:     "M2 12c.6-5 5.4-8 10-8 4.6 0 9.4 3 10 8 M2 12c.6 5 5.4 8 10 8 4.6 0 9.4-3 10-8",
+    logout:   "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4 M16 17l5-5-5-5 M21 12H9",
+    edit:     "M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7 M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z",
+    link:     "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71 M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
+    trash:    "M3 6h18 M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2 M19 6l-1 14H6L5 6",
+    eye:      "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z",
+    activity: "M22 12h-4l-3 9L9 3l-3 9H2",
+  };
+  const paths = (d[name] || "").split(" M ").filter(Boolean);
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      {paths.map((p, i) => <path key={i} d={(i === 0 ? "" : "M ") + p} />)}
+    </svg>
+  );
+};
+
+// ─── SESSION STORAGE HELPERS ──────────────────────────────────────────────
+const ccStore = {
+  get: (k, def) => { try { return JSON.parse(sessionStorage.getItem(`cc_${k}`)) ?? def; } catch { return def; } },
+  set: (k, v) => { try { sessionStorage.setItem(`cc_${k}`, JSON.stringify(v)); } catch {} },
+};
+
+// ─── CARECOMPANION LANDING PAGE ───────────────────────────────────────────
+const CCLanding = ({ onNavigate }) => {
+  const [scrolled, setScrolled] = useState(false);
+  const [demoMsg, setDemoMsg] = useState(0);
+  const demoConvo = [
+    { role:"user", text:"I'm feeling a bit lonely today." },
+    { role:"ai", text:"I hear you, and I'm really glad you told me. Loneliness can feel heavy. Would you like to talk about what's on your mind, or would it help to reach out to someone you love?" },
+    { role:"user", text:"Maybe I should call Sarah." },
+    { role:"ai", text:"That's a wonderful idea. Sarah would love to hear from you. Would you like me to help you prepare what to say, or just dial her number?" },
+  ];
+
+  useEffect(() => {
+    const h = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", h);
+    return () => window.removeEventListener("scroll", h);
+  }, []);
+
+  useEffect(() => {
+    if (demoMsg < demoConvo.length - 1) {
+      const t = setTimeout(() => setDemoMsg(m => m + 1), 2200);
+      return () => clearTimeout(t);
+    }
+  }, [demoMsg]);
+
+  return (
+    <div style={{ background: "var(--cc-cream)", minHeight: "100vh", color: "var(--cc-text)" }}>
+      <style>{`
+        :root {
+          --cc-cream: #f8f6ff; --cc-white: #ffffff;
+          --cc-indigo: #4f46e5; --cc-indigo-dark: #3730a3; --cc-indigo-light: #818cf8;
+          --cc-violet: #7c3aed; --cc-violet-light: #a78bfa;
+          --cc-rose: #e11d48; --cc-rose-light: #fb7185;
+          --cc-sage: #059669; --cc-sage-light: #34d399;
+          --cc-amber: #d97706; --cc-amber-light: #fbbf24;
+          --cc-sky: #0284c7; --cc-sky-light: #38bdf8;
+          --cc-text: #1e1b4b; --cc-muted: #6b7280; --cc-border: rgba(79,70,229,0.12);
+          --cc-font: 'DM Sans', sans-serif; --cc-serif: 'DM Serif Display', serif;
+          --cc-radius: 18px; --cc-radius-sm: 12px;
+          --cc-shadow: 0 4px 24px rgba(79,70,229,0.12);
+          --cc-shadow-lg: 0 12px 48px rgba(79,70,229,0.18);
+          --cc-glass: rgba(255,255,255,0.7); --cc-glass-border: rgba(79,70,229,0.15);
+        }
+        .cc-nav { position:fixed;top:0;left:0;right:0;z-index:100;transition:all .3s; }
+        .cc-nav--scrolled { background:rgba(248,246,255,.97);border-bottom:1px solid var(--cc-border);backdrop-filter:blur(16px);box-shadow:0 2px 16px rgba(79,70,229,.08); }
+        .cc-btn { display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:100px;font-size:15px;font-weight:600;transition:all .2s;border:none;cursor:pointer;font-family:var(--cc-font); }
+        .cc-btn--primary { background:var(--cc-indigo);color:white;box-shadow:0 4px 16px rgba(79,70,229,.35); }
+        .cc-btn--primary:hover { background:var(--cc-indigo-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,70,229,.45); }
+        .cc-btn--ghost { background:transparent;border:1.5px solid var(--cc-border);color:var(--cc-muted); }
+        .cc-btn--ghost:hover { border-color:var(--cc-indigo);color:var(--cc-indigo); }
+        .cc-btn--violet { background:var(--cc-violet);color:white;box-shadow:0 4px 16px rgba(124,58,237,.3); }
+        .cc-btn--violet:hover { background:#6d28d9;transform:translateY(-2px); }
+        .cc-card { background:var(--cc-white);border:1px solid var(--cc-border);border-radius:var(--cc-radius);box-shadow:var(--cc-shadow); }
+        .cc-card:hover { box-shadow:var(--cc-shadow-lg);transform:translateY(-2px); }
+        .cc-tag { display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:100px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase; }
+        .cc-tag--indigo { background:rgba(79,70,229,.1);border:1px solid rgba(79,70,229,.2);color:var(--cc-indigo); }
+        .cc-tag--violet { background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:var(--cc-violet); }
+        .cc-tag--sage   { background:rgba(5,150,105,.1);border:1px solid rgba(5,150,105,.2);color:var(--cc-sage); }
+        .cc-tag--rose   { background:rgba(225,29,72,.1);border:1px solid rgba(225,29,72,.2);color:var(--cc-rose); }
+        .cc-input { width:100%;background:#f5f3ff;border:1.5px solid var(--cc-border);border-radius:var(--cc-radius-sm);padding:13px 16px;color:var(--cc-text);font-size:15px;font-family:var(--cc-font);transition:border-color .2s; }
+        .cc-input:focus { border-color:var(--cc-indigo);background:white; }
+        .cc-input::placeholder { color:var(--cc-muted);opacity:.7; }
+        .cc-section { padding:90px 32px; }
+        .cc-section--alt { background:white; }
+        .cc-hero { min-height:100vh;display:flex;align-items:center;background:linear-gradient(160deg,#f0edff 0%,#f8f6ff 40%,#fff5f8 100%);padding-top:80px;position:relative;overflow:hidden; }
+        .cc-hero::before { content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(79,70,229,.08) 0%,transparent 70%);border-radius:50%;pointer-events:none; }
+        .cc-hero::after { content:'';position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(124,58,237,.06) 0%,transparent 70%);border-radius:50%;pointer-events:none; }
+        .cc-chat-bubble-ai { background:white;border:1px solid var(--cc-border);border-radius:18px 18px 18px 4px;padding:14px 18px;max-width:85%;font-size:15px;line-height:1.65;animation:fadeUp .4s ease both;box-shadow:0 2px 12px rgba(79,70,229,.08); }
+        .cc-chat-bubble-user { background:var(--cc-indigo);color:white;border-radius:18px 18px 4px 18px;padding:13px 18px;max-width:85%;font-size:15px;line-height:1.65;animation:fadeUp .4s ease both;margin-left:auto; }
+        .haven-avatar { width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--cc-indigo),var(--cc-violet));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px rgba(79,70,229,.3); }
+        .role-card { background:white;border:1px solid var(--cc-border);border-radius:var(--cc-radius);padding:28px;cursor:pointer;transition:all .25s; }
+        .role-card:hover { border-color:var(--cc-indigo);box-shadow:var(--cc-shadow-lg);transform:translateY(-4px); }
+        .feature-pill { display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;background:#f5f3ff;font-size:13px;font-weight:500;color:var(--cc-indigo); }
+        .memory-dot { position:relative;padding-left:32px; }
+        .memory-dot::before { content:'';position:absolute;left:0;top:8px;width:12px;height:12px;border-radius:50%;background:var(--cc-indigo);box-shadow:0 0 0 3px rgba(79,70,229,.15); }
+        .memory-dot::after { content:'';position:absolute;left:5px;top:20px;width:2px;height:calc(100% + 16px);background:rgba(79,70,229,.15); }
+        .memory-dot:last-child::after { display:none; }
+        @keyframes pulse-ring { 0% { box-shadow:0 0 0 0 rgba(79,70,229,.4); } 70% { box-shadow:0 0 0 16px rgba(79,70,229,0); } 100% { box-shadow:0 0 0 0 rgba(79,70,229,0); } }
+        .mic-pulse { animation:pulse-ring 2s ease-in-out infinite; }
+        @keyframes typing-dot { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-6px); } }
+        .typing-dot { width:7px;height:7px;border-radius:50%;background:var(--cc-muted);display:inline-block;animation:typing-dot 1.2s ease-in-out infinite; }
+        .typing-dot:nth-child(2) { animation-delay:.2s; }
+        .typing-dot:nth-child(3) { animation-delay:.4s; }
+      `}</style>
+
+      {/* NAV */}
+      <nav className={`cc-nav ${scrolled ? "cc-nav--scrolled" : ""}`} style={{ padding: "14px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg, var(--cc-indigo), var(--cc-violet))", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <CCIcon name="heart" size={18} color="white" />
+          </div>
+          <div>
+            <div style={{ fontSize: 17, fontWeight: 700, fontFamily: "var(--cc-serif)", color: "var(--cc-text)", letterSpacing: "-0.02em" }}>SentinelHaven</div>
+            <div style={{ fontSize: 10, color: "var(--cc-indigo)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>SentinelHaven · H.A.V.E.N</div>
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <button className="cc-btn cc-btn--ghost" style={{ padding: "8px 18px", fontSize: 13 }} onClick={() => onNavigate("cc-family")}>Family Portal</button>
+          <button className="cc-btn cc-btn--ghost" style={{ padding: "8px 18px", fontSize: 13 }} onClick={() => onNavigate("cc-caregiver")}>Caregiver</button>
+          <button className="cc-btn cc-btn--primary" style={{ padding: "9px 22px", fontSize: 14 }} onClick={() => window.open(window.location.pathname + "#cc-companion", "_self")}>Open H.A.V.E.N →</button>
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <section className="cc-hero">
+        <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 32px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center", position: "relative", zIndex: 1 }}>
+          <div style={{ animation: "fadeUp 0.7s ease" }}>
+            <div className="cc-tag cc-tag--indigo" style={{ marginBottom: 24 }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--cc-indigo)", animation: "pulse 2s infinite" }} />
+              AI Companion · Digital Support Ecosystem
+            </div>
+            <h1 style={{ fontFamily: "var(--cc-serif)", fontSize: "clamp(38px, 5vw, 64px)", lineHeight: 1.08, letterSpacing: "-0.03em", marginBottom: 24, color: "var(--cc-text)" }}>
+              Your AI companion<br />that
+              <span style={{ color: "var(--cc-indigo)" }}> remembers,</span><br />
+              <span style={{ fontStyle: "italic" }}>listens, and supports.</span>
+            </h1>
+            <p style={{ fontSize: 18, color: "var(--cc-muted)", maxWidth: 480, lineHeight: 1.75, marginBottom: 36 }}>
+              A digital support ecosystem for people with cognitive difficulties, loneliness, memory challenges, and social isolation — and the caregivers and families who love them.
+            </p>
+            <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 40 }}>
+              <button className="cc-btn cc-btn--primary" style={{ fontSize: 16, padding: "14px 32px" }} onClick={() => onNavigate("cc-companion")}>
+                <CCIcon name="heart" size={18} color="white" /> Start Free
+              </button>
+              <button className="cc-btn cc-btn--ghost" style={{ fontSize: 15, padding: "14px 28px" }} onClick={() => onNavigate("cc-companion")}>
+                Watch Demo →
+              </button>
+            </div>
+            <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+              {[["Voice & Text","Natural conversation"],["Remembers You","Life story & preferences"],["Always Here","24/7 companion"]].map(([t,s]) => (
+                <div key={t} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--cc-sage)" }} />
+                  <div><div style={{ fontSize: 13, fontWeight: 600, color: "var(--cc-text)" }}>{t}</div><div style={{ fontSize: 11, color: "var(--cc-muted)" }}>{s}</div></div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Demo Chat */}
+          <div style={{ animation: "fadeUp 0.9s ease" }}>
+            <div style={{ background: "white", border: "1px solid var(--cc-border)", borderRadius: 24, overflow: "hidden", boxShadow: "var(--cc-shadow-lg)" }}>
+              {/* Demo header */}
+              <div style={{ background: "linear-gradient(135deg, var(--cc-indigo), var(--cc-violet))", padding: "18px 22px", display: "flex", alignItems: "center", gap: 12 }}>
+                <div className="haven-avatar"><CCIcon name="heart" size={18} color="white" /></div>
+                <div>
+                  <div style={{ color: "white", fontWeight: 700, fontSize: 15 }}>H.A.V.E.N</div>
+                  <div style={{ color: "rgba(255,255,255,.7)", fontSize: 12, display: "flex", alignItems: "center", gap: 5 }}>
+                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", animation: "pulse 2s infinite" }} /> Online · Listening
+                  </div>
+                </div>
+                <button className="cc-btn mic-pulse" style={{ marginLeft: "auto", background: "rgba(255,255,255,.2)", color: "white", borderRadius: "50%", width: 40, height: 40, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", border: "none" }}>
+                  <CCIcon name="mic" size={16} color="white" />
+                </button>
+              </div>
+              {/* Messages */}
+              <div style={{ padding: "20px 18px", display: "flex", flexDirection: "column", gap: 14, minHeight: 260 }}>
+                {demoConvo.slice(0, demoMsg + 1).map((msg, i) => (
+                  <div key={i} style={{ display: "flex", gap: 10, justifyContent: msg.role === "user" ? "flex-end" : "flex-start", animation: "fadeUp 0.4s ease" }}>
+                    {msg.role === "ai" && <div className="haven-avatar" style={{ width:32, height:32, marginTop:4 }}><CCIcon name="heart" size={14} color="white" /></div>}
+                    <div className={msg.role === "ai" ? "cc-chat-bubble-ai" : "cc-chat-bubble-user"}>{msg.text}</div>
+                  </div>
+                ))}
+                {demoMsg < demoConvo.length - 1 && (
+                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <div className="haven-avatar" style={{ width:32, height:32 }}><CCIcon name="heart" size={14} color="white" /></div>
+                    <div style={{ background: "white", border: "1px solid var(--cc-border)", borderRadius: "18px 18px 18px 4px", padding: "14px 18px", display: "flex", gap: 5, alignItems: "center" }}>
+                      <div className="typing-dot" /><div className="typing-dot" /><div className="typing-dot" />
+                    </div>
+                  </div>
+                )}
+              </div>
+              {/* Input stub */}
+              <div style={{ padding: "12px 16px", borderTop: "1px solid var(--cc-border)", display: "flex", gap: 10, alignItems: "center" }}>
+                <input placeholder="Talk to H.A.V.E.N..." className="cc-input" style={{ flex: 1, padding: "11px 16px", fontSize: 14, borderRadius: 100 }} readOnly onClick={() => onNavigate("cc-companion")} />
+                <button className="cc-btn cc-btn--primary" style={{ padding: "11px 18px", borderRadius: 100 }} onClick={() => onNavigate("cc-companion")}><CCIcon name="send" size={16} color="white" /></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS — 3 ROLES */}
+      <section className="cc-section" style={{ background: "white" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 56 }}>
+            <div className="cc-tag cc-tag--violet" style={{ marginBottom: 18, justifyContent: "center" }}>Who It's For</div>
+            <h2 style={{ fontFamily: "var(--cc-serif)", fontSize: "clamp(28px, 3.5vw, 48px)", color: "var(--cc-text)", letterSpacing: "-0.02em" }}>
+              Three portals. One ecosystem.
+            </h2>
+            <p style={{ fontSize: 17, color: "var(--cc-muted)", marginTop: 14, maxWidth: 520, margin: "14px auto 0" }}>
+              Whether you need companionship, give care, or support a loved one from a distance.
+            </p>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+            {[
+              { role:"Person",      icon:"heart",    color:"var(--cc-indigo)", grad:"linear-gradient(135deg,#4f46e5,#7c3aed)", tag:"cc-tag--indigo", desc:"The person who needs companionship, memory support, or daily assistance from H.A.V.E.N.", features:["Voice conversations with H.A.V.E.N","Daily mood & wellness check-ins","Memory assistance & life timeline","Activity suggestions & routines","Journaling with gentle prompts"], view:"cc-companion" },
+              { role:"Family Member",icon:"users",   color:"var(--cc-sage)",   grad:"linear-gradient(135deg,#059669,#0284c7)", tag:"cc-tag--sage",   desc:"A family member who wants to stay connected and monitor their loved one's wellbeing.", features:["Weekly AI wellness summaries","Monitor engagement trends","Set reminders remotely","Receive alerts & notifications","Life story timeline access"], view:"cc-family" },
+              { role:"Caregiver",   icon:"shield",   color:"var(--cc-violet)", grad:"linear-gradient(135deg,#7c3aed,#e11d48)", tag:"cc-tag--violet", desc:"A professional or personal caregiver managing care plans and daily routines.", features:["Structured care plan tools","Routine management & scheduling","Escalation notifications","Progress & trend tracking","Handoff notes & logs"], view:"cc-caregiver" },
+            ].map(r => (
+              <div key={r.role} className="role-card" onClick={() => onNavigate(r.view)}>
+                <div style={{ width: 52, height: 52, borderRadius: 16, background: r.grad, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
+                  <CCIcon name={r.icon} size={24} color="white" />
+                </div>
+                <div className={`cc-tag ${r.tag}`} style={{ marginBottom: 12 }}>{r.role}</div>
+                <h3 style={{ fontFamily: "var(--cc-serif)", fontSize: 20, color: "var(--cc-text)", marginBottom: 10 }}>{r.role} Portal</h3>
+                <p style={{ fontSize: 14, color: "var(--cc-muted)", lineHeight: 1.7, marginBottom: 18 }}>{r.desc}</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+                  {r.features.map(f => (
+                    <div key={f} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div style={{ width: 18, height: 18, borderRadius: "50%", background: `${r.color}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <CCIcon name="check" size={10} color={r.color} />
+                      </div>
+                      <span style={{ fontSize: 13, color: "var(--cc-text)" }}>{f}</span>
+                    </div>
+                  ))}
+                </div>
+                <button className="cc-btn cc-btn--primary" style={{ marginTop: 22, width: "100%", justifyContent: "center", background: r.grad }}>Enter {r.role} Portal →</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MEMORY TIMELINE + AGENT SYSTEM */}
+      <section className="cc-section">
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>
+          <div>
+            <div className="cc-tag cc-tag--indigo" style={{ marginBottom: 20 }}>Memory Timeline</div>
+            <h2 style={{ fontFamily: "var(--cc-serif)", fontSize: "clamp(26px, 3vw, 42px)", color: "var(--cc-text)", marginBottom: 16, letterSpacing: "-0.02em" }}>Life Journey</h2>
+            <p style={{ color: "var(--cc-muted)", fontSize: 15, lineHeight: 1.7, marginBottom: 32 }}>
+              H.A.V.E.N builds a living timeline of your life story — moments, people, and memories it can reference naturally in conversation.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              {DEFAULT_PROFILE.memories.map((m, i) => (
+                <div key={m.id} className="memory-dot" style={{ paddingBottom: i < DEFAULT_PROFILE.memories.length - 1 ? 8 : 0 }}>
+                  <div style={{ display: "flex", gap: 12, alignItems: "start" }}>
+                    <div style={{ minWidth: 44, fontFamily: "'Space Mono', monospace", fontSize: 12, color: "var(--cc-indigo)", fontWeight: 700 }}>{m.year}</div>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: "var(--cc-text)" }}>{m.event}</div>
+                      <div style={{ fontSize: 12, color: "var(--cc-muted)", marginTop: 2 }}>{m.category}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 28, padding: "14px 18px", background: "#f5f3ff", borderRadius: 12, border: "1px solid rgba(79,70,229,.15)", fontSize: 13, color: "var(--cc-indigo)", fontStyle: "italic" }}>
+              "Tell me about your first job." → H.A.V.E.N remembers and references your story naturally.
+            </div>
+          </div>
+          {/* Agent system */}
+          <div>
+            <div className="cc-tag cc-tag--violet" style={{ marginBottom: 20 }}>Multi-Agent Architecture</div>
+            <h2 style={{ fontFamily: "var(--cc-serif)", fontSize: "clamp(26px, 3vw, 42px)", color: "var(--cc-text)", marginBottom: 16, letterSpacing: "-0.02em" }}>Not a chatbot. A system.</h2>
+            <p style={{ color: "var(--cc-muted)", fontSize: 15, lineHeight: 1.7, marginBottom: 28 }}>
+              Five specialized agents work together — each focused on what they do best.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                { agent:"Master Agent",      color:"var(--cc-indigo)",  icon:"brain",    desc:"Routes conversations to the right specialist" },
+                { agent:"Companion Agent",   color:"var(--cc-violet)",  icon:"heart",    desc:"Empathy, relationship building, natural dialogue" },
+                { agent:"Cognitive Assistant",color:"var(--cc-sky)",    icon:"brain",    desc:"Memory support, reminders, daily routines" },
+                { agent:"Wellness Agent",    color:"var(--cc-sage)",    icon:"activity", desc:"Mood tracking, loneliness detection, sleep" },
+                { agent:"Safety Agent",      color:"var(--cc-rose)",    icon:"shield",   desc:"Crisis detection, confusion alerts, escalation" },
+              ].map(a => (
+                <div key={a.agent} style={{ display: "flex", gap: 14, alignItems: "center", padding: "12px 16px", background: "white", border: "1px solid var(--cc-border)", borderRadius: 12 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: `${a.color}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <CCIcon name={a.icon} size={18} color={a.color} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "var(--cc-text)" }}>{a.agent}</div>
+                    <div style={{ fontSize: 12, color: "var(--cc-muted)" }}>{a.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FEATURES GRID */}
+      <section className="cc-section" style={{ background: "white" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 52 }}>
+            <h2 style={{ fontFamily: "var(--cc-serif)", fontSize: "clamp(28px, 3.5vw, 48px)", color: "var(--cc-text)", letterSpacing: "-0.02em" }}>Everything a companion should be.</h2>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+            {[
+              { icon:"mic",       color:"var(--cc-indigo)", title:"Voice + Text",        desc:"Natural conversation via voice or text. H.A.V.E.N listens, understands, and responds just like a person would." },
+              { icon:"brain",     color:"var(--cc-violet)", title:"Remembers Your Story", desc:"Names, hobbies, family members, life events — H.A.V.E.N builds a memory that makes every conversation personal." },
+              { icon:"calendar",  color:"var(--cc-sky)",    title:"Daily Routines",       desc:"Medication reminders, activity nudges, appointment prep. Everything organized and gently delivered." },
+              { icon:"activity",  color:"var(--cc-sage)",   title:"Wellness Tracking",    desc:"Tracks mood, energy, and sleep over time. Detects loneliness patterns before they become crises." },
+              { icon:"users",     color:"var(--cc-amber)",  title:"Human Connection",     desc:"Encourages calls, messages, and visits. H.A.V.E.N is a bridge to human connection, not a replacement." },
+              { icon:"alert",     color:"var(--cc-rose)",   title:"Safety & Escalation",  desc:"Detects crisis language and distress. Connects to family, caregivers, or emergency services when needed." },
+              { icon:"book",      color:"var(--cc-indigo)", title:"Life Story Journal",    desc:"Records and organizes memories into a personal biography family members can treasure forever." },
+              { icon:"leaf",      color:"var(--cc-sage)",   title:"Activity Suggestions", desc:"Personalized activities for cognitive stimulation, social engagement, and daily joy." },
+              { icon:"shield",    color:"var(--cc-violet)", title:"Caregiver Portal",      desc:"Care plans, routine management, escalation alerts, and progress reports for professional caregivers." },
+            ].map(f => (
+              <div key={f.title} style={{ background: "var(--cc-cream)", border: "1px solid var(--cc-border)", borderRadius: 16, padding: 24, transition: "all .2s" }} className="cc-card">
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: `${f.color}12`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+                  <CCIcon name={f.icon} size={22} color={f.color} />
+                </div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: "var(--cc-text)", marginBottom: 8 }}>{f.title}</div>
+                <p style={{ fontSize: 14, color: "var(--cc-muted)", lineHeight: 1.65 }}>{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section style={{ padding: "80px 32px", textAlign: "center", background: "linear-gradient(135deg, #f0edff, #f8f6ff)" }}>
+        <h2 style={{ fontFamily: "var(--cc-serif)", fontSize: "clamp(30px, 4vw, 52px)", color: "var(--cc-text)", marginBottom: 18, letterSpacing: "-0.02em" }}>No one should feel alone.</h2>
+        <p style={{ color: "var(--cc-muted)", fontSize: 18, marginBottom: 36 }}>Start a conversation with H.A.V.E.N today — free, private, and always here.</p>
+        <button className="cc-btn cc-btn--primary" style={{ fontSize: 18, padding: "16px 40px" }} onClick={() => onNavigate("cc-companion")}>
+          <CCIcon name="heart" size={20} color="white" /> Begin Your Journey
+        </button>
+      </section>
+
+      {/* FOOTER */}
+      <footer style={{ borderTop: "1px solid var(--cc-border)", padding: "28px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16, background: "white" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 30, height: 30, borderRadius: 9, background: "linear-gradient(135deg,var(--cc-indigo),var(--cc-violet))", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <CCIcon name="heart" size={14} color="white" />
+          </div>
+          <span style={{ fontFamily: "var(--cc-serif)", fontSize: 15, color: "var(--cc-text)" }}>SentinelHaven · H.A.V.E.N AI</span>
+        </div>
+        <div style={{ fontSize: 13, color: "var(--cc-muted)" }}>© 2025 GuardiansCall · HIPAA Aligned · WCAG 2.1 AA</div>
+        <div style={{ display: "flex", gap: 16 }}>
+          {[["Family Portal","cc-family"],["Caregiver","cc-caregiver"],["GuardiansCall ↗","_gc"]].map(([l,v]) => (
+            <button key={l} onClick={() => v === "_gc" ? window.open(window.location.pathname + "#landing", "_blank", "noopener") : onNavigate(v)} style={{ background: "none", color: v === "_gc" ? "var(--cc-indigo)" : "var(--cc-muted)", fontSize: 13, cursor: "pointer" }}>{l}</button>
+          ))}
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+// ─── H.A.V.E.N COMPANION APP ──────────────────────────────────────────────────
+const CCCompanionApp = ({ onNavigate }) => {
+  const [profile, setProfile] = useState(() => ccStore.get("profile", DEFAULT_PROFILE));
+  const [messages, setMessages] = useState(() => ccStore.get("messages", [
+    { role: "assistant", content: `Hello ${ccStore.get("profile", DEFAULT_PROFILE).name || "there"} 😊 I'm H.A.V.E.N — your personal companion. I'm here to talk, listen, and help you with whatever you need today. How are you feeling right now?`, ts: new Date().toISOString() }
+  ]));
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("chat");
+  const [moodLog, setMoodLog] = useState(() => ccStore.get("moodlog", []));
+  const [reminders, setReminders] = useState(() => ccStore.get("reminders", REMINDER_TEMPLATES));
+  const [activities, setActivities] = useState(() => ccStore.get("activities", ACTIVITY_SUGGESTIONS.map(a => ({...a, done: false}))));
+  const [showVoice, setShowVoice] = useState(false);
+  const [showMoodModal, setShowMoodModal] = useState(false);
+  const [newMood, setNewMood] = useState({ score: 7, note: "", energy: 6, lonely: false });
+  const [memoryInput, setMemoryInput] = useState({ year: "", event: "", category: "Life" });
+  const [showAddMemory, setShowAddMemory] = useState(false);
+  const messagesEnd = useRef(null);
+  const inputRef = useRef(null);
+
+  useEffect(() => { messagesEnd.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+  useEffect(() => { ccStore.set("messages", messages.slice(-40)); }, [messages]);
+  useEffect(() => { ccStore.set("moodlog", moodLog); }, [moodLog]);
+
+  const sendMessage = async () => {
+    if (!input.trim() || loading) return;
+    const userMsg = { role: "user", content: input, ts: new Date().toISOString() };
+    const history = [...messages, userMsg];
+    setMessages(history);
+    setInput("");
+    setLoading(true);
+    const apiMsgs = history.slice(-12).map(m => ({ role: m.role === "assistant" ? "assistant" : "user", content: m.content }));
+    setMessages(h => [...h, { role: "assistant", content: "", ts: new Date().toISOString(), streaming: true }]);
+    try {
+      await callCompanionAI(apiMsgs, COMPANION_SYSTEM(profile), chunk => {
+        setMessages(h => h.map((m, i) => i === h.length - 1 ? { ...m, content: chunk } : m));
+      });
+      setMessages(h => h.map((m, i) => i === h.length - 1 ? { ...m, streaming: false } : m));
+    } catch {
+      setMessages(h => h.map((m, i) => i === h.length - 1 ? { ...m, content: "I'm having a little trouble right now. If you need help urgently, please call a family member or 988.", streaming: false } : m));
+    }
+    setLoading(false);
+  };
+
+  const logMood = () => {
+    const entry = { ...newMood, id: Date.now(), date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }) };
+    setMoodLog(l => [entry, ...l].slice(0, 90));
+    setShowMoodModal(false);
+    setNewMood({ score: 7, note: "", energy: 6, lonely: false });
+  };
+
+  const addMemory = () => {
+    if (!memoryInput.year || !memoryInput.event) return;
+    const updated = { ...profile, memories: [...(profile.memories || []), { id: Date.now(), ...memoryInput }].sort((a, b) => a.year - b.year) };
+    setProfile(updated);
+    ccStore.set("profile", updated);
+    setMemoryInput({ year: "", event: "", category: "Life" });
+    setShowAddMemory(false);
+  };
+
+  const toggleActivity = id => setActivities(a => a.map(x => x.id === id ? { ...x, done: !x.done } : x));
+  const avgMood = moodLog.length ? (moodLog.slice(0, 7).reduce((s, m) => s + m.score, 0) / Math.min(moodLog.length, 7)).toFixed(1) : "—";
+  const lonelyDays = moodLog.slice(0, 7).filter(m => m.lonely).length;
+
+  const tabs = [
+    { id: "chat",       icon: "heart",    label: "H.A.V.E.N" },
+    { id: "dashboard",  icon: "home",     label: "Today" },
+    { id: "memories",   icon: "book",     label: "Memories" },
+    { id: "wellness",   icon: "activity", label: "Wellness" },
+  ];
+
+  const moodEmoji = (s) => s >= 8 ? "😊" : s >= 6 ? "🙂" : s >= 4 ? "😐" : "😔";
+
+  return (
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--cc-cream)", maxWidth: 480, margin: "0 auto", position: "relative", overflow: "hidden" }}>
+      <style>{`
+        .cc-tab { display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;padding:10px 4px;background:none;color:var(--cc-muted);font-size:10px;font-weight:600;transition:all .2s;border:none;cursor:pointer;font-family:var(--cc-font); }
+        .cc-tab.active { color:var(--cc-indigo); }
+        .haven-msg { max-width:84%;animation:fadeUp .3s ease; }
+        .haven-msg-ai { background:white;border:1px solid var(--cc-border);border-radius:18px 18px 18px 4px;padding:13px 16px;font-size:15px;line-height:1.65;box-shadow:0 2px 8px rgba(79,70,229,.08); }
+        .haven-msg-user { background:var(--cc-indigo);color:white;border-radius:18px 18px 4px 18px;padding:12px 16px;font-size:15px;line-height:1.6;margin-left:auto; }
+        .quick-reply { padding:8px 16px;border-radius:100px;border:1.5px solid var(--cc-border);background:white;color:var(--cc-indigo);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap; }
+        .quick-reply:hover { background:var(--cc-indigo);color:white;border-color:var(--cc-indigo); }
+        .mood-circle { width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;border:3px solid; }
+      `}</style>
+
+      {/* Header */}
+      <div style={{ background: "linear-gradient(135deg, var(--cc-indigo), var(--cc-violet))", padding: "14px 18px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "calc(14px + env(safe-area-inset-top))" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div className="haven-avatar"><CCIcon name="heart" size={18} color="white" /></div>
+          <div>
+            <div style={{ color: "white", fontWeight: 700, fontSize: 15 }}>H.A.V.E.N</div>
+            <div style={{ color: "rgba(255,255,255,.7)", fontSize: 11, display: "flex", alignItems: "center", gap: 5 }}>
+              <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#4ade80", animation: "pulse 2s infinite" }} /> Here for you
+            </div>
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button onClick={() => setShowMoodModal(true)} style={{ background: "rgba(255,255,255,.2)", border: "none", color: "white", borderRadius: 10, padding: "7px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>+ Mood</button>
+          <button onClick={() => onNavigate("cc-landing")} style={{ background: "rgba(255,255,255,.15)", border: "none", color: "rgba(255,255,255,.8)", borderRadius: 10, padding: "7px 10px", cursor: "pointer" }}>
+            <CCIcon name="home" size={15} color="white" />
+          </button>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, overflow: "auto" }}>
+
+        {/* CHAT */}
+        {activeTab === "chat" && (
+          <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+            <div style={{ flex: 1, overflow: "auto", padding: "16px 14px 8px", display: "flex", flexDirection: "column", gap: 14 }}>
+              {messages.map((m, i) => (
+                <div key={i} style={{ display: "flex", gap: 8, justifyContent: m.role !== "user" ? "flex-start" : "flex-end" }}>
+                  {m.role !== "user" && (
+                    <div className="haven-avatar" style={{ width: 30, height: 30, marginTop: 3, flexShrink: 0 }}>
+                      <CCIcon name="heart" size={13} color="white" />
+                    </div>
+                  )}
+                  <div className={`haven-msg ${m.role !== "user" ? "haven-msg-ai" : "haven-msg-user"}`} style={{ color: m.role !== "user" ? "var(--cc-text)" : "white" }}>
+                    {m.content || (m.streaming ? <span style={{ display: "flex", gap: 5, padding: "2px 0" }}><div className="typing-dot" /><div className="typing-dot" /><div className="typing-dot" /></span> : "")}
+                  </div>
+                </div>
+              ))}
+              <div ref={messagesEnd} />
+            </div>
+            {/* Quick replies */}
+            <div style={{ padding: "6px 14px", overflowX: "auto", display: "flex", gap: 8, whiteSpace: "nowrap" }}>
+              {["How are you today?", "I feel lonely", "Help me remember something", "What should I do today?", "Call my family"].map(q => (
+                <button key={q} className="quick-reply" onClick={() => { setInput(q); inputRef.current?.focus(); }}>{q}</button>
+              ))}
+            </div>
+            {/* Input */}
+            <div style={{ padding: "10px 14px 14px", borderTop: "1px solid var(--cc-border)", display: "flex", gap: 8, alignItems: "flex-end", background: "white" }}>
+              <button onClick={() => setShowVoice(v => !v)} style={{ width: 42, height: 42, borderRadius: "50%", background: showVoice ? "var(--cc-indigo)" : "#f5f3ff", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, transition: "all .2s", ...(showVoice ? { animation: "pulse-ring 2s infinite" } : {}) }}>
+                <CCIcon name="mic" size={18} color={showVoice ? "white" : "var(--cc-indigo)"} />
+              </button>
+              <textarea ref={inputRef} value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())} placeholder="Talk to H.A.V.E.N…" rows={1} style={{ flex: 1, background: "#f5f3ff", border: "1.5px solid var(--cc-border)", borderRadius: 18, padding: "11px 14px", color: "var(--cc-text)", fontSize: 15, resize: "none", lineHeight: 1.5, fontFamily: "var(--cc-font)", maxHeight: 90, outline: "none" }} />
+              <button onClick={sendMessage} disabled={loading} style={{ width: 42, height: 42, borderRadius: "50%", background: loading ? "#e5e7eb" : "var(--cc-indigo)", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: loading ? "not-allowed" : "pointer", flexShrink: 0, transition: "all .2s" }}>
+                {loading ? <div style={{ width: 16, height: 16, border: "2px solid white", borderTopColor: "transparent", borderRadius: "50%", animation: "spin .8s linear infinite" }} /> : <CCIcon name="send" size={16} color="white" />}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* DASHBOARD */}
+        {activeTab === "dashboard" && (
+          <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14, animation: "fadeUp .4s ease" }}>
+            <div style={{ background: "linear-gradient(135deg, var(--cc-indigo), var(--cc-violet))", borderRadius: 18, padding: "20px 20px", color: "white" }}>
+              <div style={{ fontSize: 13, opacity: 0.8, marginBottom: 4 }}>Good morning, {profile.name} ☀️</div>
+              <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "var(--cc-serif)" }}>How are you today?</div>
+              <div style={{ display: "flex", gap: 16, marginTop: 14 }}>
+                <div style={{ background: "rgba(255,255,255,.15)", borderRadius: 12, padding: "10px 14px", flex: 1, textAlign: "center" }}>
+                  <div style={{ fontSize: 22 }}>{moodEmoji(avgMood)}</div>
+                  <div style={{ fontSize: 11, opacity: .8, marginTop: 2 }}>Avg Mood</div>
+                  <div style={{ fontSize: 16, fontWeight: 700 }}>{avgMood}/10</div>
+                </div>
+                <div style={{ background: "rgba(255,255,255,.15)", borderRadius: 12, padding: "10px 14px", flex: 1, textAlign: "center" }}>
+                  <div style={{ fontSize: 22 }}>📋</div>
+                  <div style={{ fontSize: 11, opacity: .8, marginTop: 2 }}>Logs (7d)</div>
+                  <div style={{ fontSize: 16, fontWeight: 700 }}>{Math.min(moodLog.length, 7)}</div>
+                </div>
+                <div style={{ background: lonelyDays > 2 ? "rgba(225,29,72,.3)" : "rgba(255,255,255,.15)", borderRadius: 12, padding: "10px 14px", flex: 1, textAlign: "center" }}>
+                  <div style={{ fontSize: 22 }}>🤝</div>
+                  <div style={{ fontSize: 11, opacity: .8, marginTop: 2 }}>Lonely days</div>
+                  <div style={{ fontSize: 16, fontWeight: 700 }}>{lonelyDays}/7</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Today's activities */}
+            <div style={{ background: "white", borderRadius: 16, border: "1px solid var(--cc-border)", padding: 18 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "var(--cc-text)", marginBottom: 12, display: "flex", justifyContent: "space-between" }}>
+                Today's Activities
+                <span style={{ fontSize: 12, color: "var(--cc-indigo)", fontWeight: 600 }}>{activities.filter(a => a.done).length}/{activities.length} done</span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {activities.slice(0, 5).map(a => (
+                  <button key={a.id} onClick={() => toggleActivity(a.id)} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, border: `1.5px solid ${a.done ? "rgba(5,150,105,.3)" : "var(--cc-border)"}`, background: a.done ? "rgba(5,150,105,.06)" : "#f9f8ff", cursor: "pointer", textAlign: "left", transition: "all .2s" }}>
+                    <div style={{ width: 32, height: 32, borderRadius: 10, background: a.done ? "rgba(5,150,105,.15)" : "#f0edff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{a.done ? "✓" : a.icon}</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: a.done ? "var(--cc-sage)" : "var(--cc-text)", textDecoration: a.done ? "line-through" : "none" }}>{a.title}</div>
+                      <div style={{ fontSize: 12, color: "var(--cc-muted)" }}>{a.duration}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Reminders */}
+            <div style={{ background: "white", borderRadius: 16, border: "1px solid var(--cc-border)", padding: 18 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "var(--cc-text)", marginBottom: 12 }}>Reminders</div>
+              {reminders.slice(0, 4).map(r => (
+                <div key={r.title} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: "1px solid var(--cc-border)" }}>
+                  <div style={{ fontSize: 20 }}>{r.icon}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "var(--cc-text)" }}>{r.title}</div>
+                    <div style={{ fontSize: 12, color: "var(--cc-muted)" }}>{r.time} · {r.repeat}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* MEMORIES */}
+        {activeTab === "memories" && (
+          <div style={{ padding: 16, animation: "fadeUp .4s ease" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 700, fontFamily: "var(--cc-serif)", color: "var(--cc-text)" }}>Life Journey</div>
+                <div style={{ fontSize: 13, color: "var(--cc-muted)" }}>H.A.V.E.N remembers these moments</div>
+              </div>
+              <button onClick={() => setShowAddMemory(true)} style={{ background: "var(--cc-indigo)", color: "white", borderRadius: 10, padding: "8px 14px", fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer" }}>+ Add</button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {(profile.memories || []).map((m, i) => (
+                <div key={m.id} style={{ display: "flex", gap: 14, background: "white", border: "1px solid var(--cc-border)", borderRadius: 14, padding: "14px 16px" }}>
+                  <div style={{ minWidth: 48, fontFamily: "'Space Mono', monospace", fontSize: 13, color: "var(--cc-indigo)", fontWeight: 700, paddingTop: 2 }}>{m.year}</div>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "var(--cc-text)" }}>{m.event}</div>
+                    <div style={{ fontSize: 12, color: "var(--cc-muted)", marginTop: 2 }}>{m.category}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {showAddMemory && (
+              <div style={{ position: "fixed", inset: 0, background: "rgba(30,27,75,.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }}>
+                <div style={{ background: "white", borderRadius: 20, padding: 24, width: "100%", maxWidth: 360 }}>
+                  <div style={{ fontFamily: "var(--cc-serif)", fontSize: 20, color: "var(--cc-text)", marginBottom: 20 }}>Add Memory</div>
+                  {[["Year","year","e.g. 1985"],["Event","event","What happened?"],["Category","category","Family, Work, Home…"]].map(([l,k,p]) => (
+                    <label key={k} style={{ display: "block", fontSize: 13, color: "var(--cc-muted)", fontWeight: 600, marginBottom: 14 }}>
+                      {l}
+                      <input value={memoryInput[k]} onChange={e => setMemoryInput(m => ({...m, [k]: e.target.value}))} placeholder={p} className="cc-input" style={{ marginTop: 6, display: "block" }} />
+                    </label>
+                  ))}
+                  <div style={{ display: "flex", gap: 10 }}>
+                    <button onClick={addMemory} className="cc-btn cc-btn--primary" style={{ flex: 1, justifyContent: "center" }}>Save</button>
+                    <button onClick={() => setShowAddMemory(false)} style={{ flex: 1, background: "#f5f3ff", border: "1px solid var(--cc-border)", borderRadius: 100, padding: "11px", color: "var(--cc-muted)", fontSize: 14, cursor: "pointer" }}>Cancel</button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* WELLNESS */}
+        {activeTab === "wellness" && (
+          <div style={{ padding: 16, animation: "fadeUp .4s ease" }}>
+            <div style={{ fontSize: 18, fontWeight: 700, fontFamily: "var(--cc-serif)", color: "var(--cc-text)", marginBottom: 4 }}>Wellness Log</div>
+            <div style={{ fontSize: 13, color: "var(--cc-muted)", marginBottom: 16 }}>Track how you're feeling over time.</div>
+            {lonelyDays > 2 && (
+              <div style={{ background: "rgba(225,29,72,.06)", border: "1px solid rgba(225,29,72,.2)", borderRadius: 14, padding: "14px 16px", marginBottom: 16, display: "flex", gap: 12 }}>
+                <CCIcon name="alert" size={18} color="var(--cc-rose)" />
+                <div style={{ fontSize: 14, color: "#be123c", lineHeight: 1.5 }}>
+                  You've felt lonely {lonelyDays} of the last 7 days. Would you like H.A.V.E.N to help you reach out to someone?
+                </div>
+              </div>
+            )}
+            <button onClick={() => setShowMoodModal(true)} style={{ width: "100%", background: "var(--cc-indigo)", color: "white", border: "none", borderRadius: 12, padding: "13px", fontSize: 15, fontWeight: 600, cursor: "pointer", marginBottom: 16 }}>+ Log Today's Mood</button>
+            {moodLog.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "40px 0", color: "var(--cc-muted)" }}>
+                <div style={{ fontSize: 40, marginBottom: 12 }}>📊</div>
+                <div>No logs yet. Start tracking to see patterns.</div>
+              </div>
+            ) : moodLog.slice(0, 10).map(e => (
+              <div key={e.id} style={{ background: "white", border: "1px solid var(--cc-border)", borderRadius: 14, padding: "14px 16px", marginBottom: 10 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                  <div style={{ fontSize: 13, color: "var(--cc-muted)" }}>{e.date} · {e.time}</div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    {e.lonely && <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 100, background: "rgba(225,29,72,.1)", color: "var(--cc-rose)", border: "1px solid rgba(225,29,72,.2)" }}>Lonely</span>}
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 16 }}>
+                  {[["Mood", e.score, "var(--cc-indigo)"],["Energy", e.energy, "var(--cc-sage)"]].map(([l,v,c]) => (
+                    <div key={l} style={{ flex: 1 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 4 }}>
+                        <span style={{ color: "var(--cc-muted)" }}>{l}</span><span style={{ color: c, fontWeight: 700 }}>{v}/10</span>
+                      </div>
+                      <div style={{ height: 5, borderRadius: 3, background: "#f0edff", overflow: "hidden" }}>
+                        <div style={{ width: `${v*10}%`, height: "100%", background: c, borderRadius: 3 }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {e.note && <div style={{ fontSize: 13, color: "var(--cc-muted)", marginTop: 8, fontStyle: "italic" }}>{e.note}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Mood Modal */}
+      {showMoodModal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(30,27,75,.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }} onClick={e => e.target === e.currentTarget && setShowMoodModal(false)}>
+          <div style={{ background: "white", borderRadius: 22, padding: 26, width: "100%", maxWidth: 380, animation: "fadeUp .3s ease" }}>
+            <div style={{ fontFamily: "var(--cc-serif)", fontSize: 22, color: "var(--cc-text)", marginBottom: 22 }}>How are you feeling?</div>
+            {[["Mood", "score", "var(--cc-indigo)"],["Energy", "energy", "var(--cc-sage)"]].map(([l,k,c]) => (
+              <div key={k} style={{ marginBottom: 20 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, marginBottom: 10 }}>
+                  <span style={{ color: "var(--cc-muted)", fontWeight: 600 }}>{l}</span>
+                  <span style={{ color: c, fontWeight: 700 }}>{newMood[k]}/10 {moodEmoji(newMood[k])}</span>
+                </div>
+                <input type="range" min={1} max={10} value={newMood[k]} onChange={e => setNewMood(m => ({...m, [k]: +e.target.value}))} style={{ width: "100%", accentColor: c }} />
+              </div>
+            ))}
+            <label style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, cursor: "pointer" }}>
+              <input type="checkbox" checked={newMood.lonely} onChange={e => setNewMood(m => ({...m, lonely: e.target.checked}))} style={{ width: 18, height: 18, accentColor: "var(--cc-rose)" }} />
+              <span style={{ fontSize: 14, color: "var(--cc-text)" }}>I've been feeling lonely today</span>
+            </label>
+            <input value={newMood.note} onChange={e => setNewMood(m => ({...m, note: e.target.value}))} placeholder="Anything else on your mind? (optional)" className="cc-input" style={{ marginBottom: 18 }} />
+            <div style={{ display: "flex", gap: 10 }}>
+              <button onClick={logMood} className="cc-btn cc-btn--primary" style={{ flex: 1, justifyContent: "center" }}>Save</button>
+              <button onClick={() => setShowMoodModal(false)} style={{ flex: 1, background: "#f5f3ff", border: "1px solid var(--cc-border)", borderRadius: 100, padding: "11px", color: "var(--cc-muted)", fontSize: 14, cursor: "pointer" }}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bottom tabs */}
+      <div style={{ borderTop: "1px solid var(--cc-border)", display: "flex", background: "white", paddingBottom: "env(safe-area-inset-bottom)" }}>
+        {tabs.map(t => (
+          <button key={t.id} className={`cc-tab ${activeTab === t.id ? "active" : ""}`} onClick={() => setActiveTab(t.id)}>
+            <CCIcon name={t.icon} size={20} color={activeTab === t.id ? "var(--cc-indigo)" : "var(--cc-muted)"} />
+            {t.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── FAMILY PORTAL ────────────────────────────────────────────────────────
+const CCFamilyPortal = ({ onNavigate }) => {
+  const [activeTab, setActiveTab] = useState("overview");
+  const moodLog = ccStore.get("moodlog", []);
+  const messages = ccStore.get("messages", []);
+  const [summary, setSummary] = useState("");
+  const [loadingSummary, setLoadingSummary] = useState(false);
+  const profile = ccStore.get("profile", DEFAULT_PROFILE);
+
+  const generateSummary = async () => {
+    setLoadingSummary(true);
+    const recentMoods = moodLog.slice(0, 7);
+    const avgMood = recentMoods.length ? (recentMoods.reduce((s, m) => s + m.score, 0) / recentMoods.length).toFixed(1) : "no data";
+    const lonelyDays = recentMoods.filter(m => m.lonely).length;
+    const prompt = `Weekly summary for ${profile.name}: Average mood ${avgMood}/10. Lonely days: ${lonelyDays}/7. Recent conversations: ${messages.slice(-6).map(m => m.content?.slice(0, 60)).join(" | ")}`;
+    setSummary("");
+    try {
+      await callCompanionAI([{ role: "user", content: prompt }], WELLNESS_SYSTEM, chunk => setSummary(chunk));
+    } catch { setSummary("Unable to generate summary right now. Please check connection."); }
+    setLoadingSummary(false);
+  };
+
+  const avgMood = moodLog.slice(0, 7).length ? (moodLog.slice(0, 7).reduce((s, m) => s + m.score, 0) / Math.min(moodLog.length, 7)).toFixed(1) : "—";
+  const lonelyDays = moodLog.slice(0, 7).filter(m => m.lonely).length;
+  const chatDays = new Set(messages.map(m => new Date(m.ts).toDateString())).size;
+
+  return (
+    <div style={{ minHeight: "100vh", background: "var(--cc-cream)", color: "var(--cc-text)" }}>
+      <div style={{ background: "white", borderBottom: "1px solid var(--cc-border)", padding: "16px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 50 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button onClick={() => onNavigate("cc-landing")} style={{ color: "var(--cc-muted)", fontSize: 13, display: "flex", alignItems: "center", gap: 5 }}>← Back</button>
+          <div style={{ fontFamily: "var(--cc-serif)", fontSize: 20, color: "var(--cc-text)", fontWeight: 600 }}>Family Portal</div>
+        </div>
+        <div className="cc-tag cc-tag--sage">{profile.name}'s Dashboard</div>
+      </div>
+
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "28px 24px" }}>
+        {/* Stats */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 28 }}>
+          {[
+            { label:"Avg Mood (7d)", value:`${avgMood}/10`, icon:"😊", color:"var(--cc-indigo)", alert: false },
+            { label:"Lonely Days (7d)", value:`${lonelyDays}/7`, icon:"🤝", color:"var(--cc-rose)", alert: lonelyDays > 2 },
+            { label:"Days Active", value:chatDays, icon:"💬", color:"var(--cc-sage)", alert: false },
+            { label:"Mood Logs", value:moodLog.length, icon:"📊", color:"var(--cc-violet)", alert: false },
+          ].map(s => (
+            <div key={s.label} className="cc-card" style={{ padding: "18px 16px", cursor: "default", border: s.alert ? "1px solid rgba(225,29,72,.3)" : "1px solid var(--cc-border)", background: s.alert ? "rgba(225,29,72,.04)" : "white" }}>
+              <div style={{ fontSize: 26, marginBottom: 6 }}>{s.icon}</div>
+              <div style={{ fontFamily: "var(--cc-serif)", fontSize: 28, color: s.color, lineHeight: 1 }}>{s.value}</div>
+              <div style={{ fontSize: 12, color: "var(--cc-muted)", marginTop: 4 }}>{s.label}</div>
+              {s.alert && <div style={{ fontSize: 11, color: "var(--cc-rose)", marginTop: 4, fontWeight: 600 }}>⚠ Consider reaching out</div>}
+            </div>
+          ))}
+        </div>
+
+        {/* AI Summary */}
+        <div className="cc-card" style={{ padding: 24, marginBottom: 24, background: "white" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+            <div style={{ fontFamily: "var(--cc-serif)", fontSize: 20, color: "var(--cc-text)" }}>AI Wellness Summary</div>
+            <button onClick={generateSummary} disabled={loadingSummary} className="cc-btn cc-btn--primary" style={{ padding: "9px 20px", fontSize: 13 }}>
+              {loadingSummary ? "Generating…" : "Generate Summary"}
+            </button>
+          </div>
+          {!summary && !loadingSummary && (
+            <p style={{ color: "var(--cc-muted)", fontSize: 15, fontStyle: "italic" }}>
+              Click "Generate Summary" to get an AI-written wellbeing report for {profile.name}.
+            </p>
+          )}
+          {loadingSummary && !summary && (
+            <div style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--cc-muted)" }}>
+              <div style={{ width: 18, height: 18, border: "2px solid var(--cc-indigo)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin .8s linear infinite" }} />
+              H.A.V.E.N is analyzing recent activity…
+            </div>
+          )}
+          {summary && (
+            <div style={{ fontSize: 15, lineHeight: 1.75, color: "var(--cc-text)", background: "#f5f3ff", borderRadius: 12, padding: "16px 18px", border: "1px solid rgba(79,70,229,.1)" }}>
+              {summary}
+            </div>
+          )}
+        </div>
+
+        {/* Recent Mood Log */}
+        <div className="cc-card" style={{ padding: 24, background: "white" }}>
+          <div style={{ fontFamily: "var(--cc-serif)", fontSize: 20, color: "var(--cc-text)", marginBottom: 16 }}>Recent Mood Log</div>
+          {moodLog.length === 0 ? (
+            <p style={{ color: "var(--cc-muted)", textAlign: "center", padding: "32px 0" }}>No mood logs yet. Encourage {profile.name} to check in with H.A.V.E.N daily.</p>
+          ) : moodLog.slice(0, 7).map(e => (
+            <div key={e.id} style={{ display: "flex", gap: 16, alignItems: "center", padding: "10px 0", borderBottom: "1px solid var(--cc-border)" }}>
+              <div style={{ fontSize: 24 }}>{e.score >= 8 ? "😊" : e.score >= 6 ? "🙂" : e.score >= 4 ? "😐" : "😔"}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: "flex", gap: 12 }}>
+                  <span style={{ fontSize: 13, color: "var(--cc-indigo)", fontWeight: 600 }}>Mood {e.score}/10</span>
+                  <span style={{ fontSize: 13, color: "var(--cc-sage)", fontWeight: 600 }}>Energy {e.energy}/10</span>
+                  {e.lonely && <span style={{ fontSize: 11, padding: "1px 8px", borderRadius: 100, background: "rgba(225,29,72,.1)", color: "var(--cc-rose)" }}>Lonely</span>}
+                </div>
+                {e.note && <div style={{ fontSize: 13, color: "var(--cc-muted)", marginTop: 2 }}>{e.note}</div>}
+              </div>
+              <div style={{ fontSize: 12, color: "var(--cc-muted)" }}>{e.date}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── CAREGIVER PORTAL ─────────────────────────────────────────────────────
+const CCCaregiverPortal = ({ onNavigate }) => {
+  const profile = ccStore.get("profile", DEFAULT_PROFILE);
+  const moodLog = ccStore.get("moodlog", []);
+  const [notes, setNotes] = useState(() => ccStore.get("care_notes", []));
+  const [newNote, setNewNote] = useState("");
+  const [reminders, setReminders] = useState(() => ccStore.get("reminders", REMINDER_TEMPLATES));
+  const [showAddReminder, setShowAddReminder] = useState(false);
+  const [newReminder, setNewReminder] = useState({ title: "", time: "09:00", repeat: "daily", icon: "🔔", category: "other" });
+
+  const addNote = () => {
+    if (!newNote.trim()) return;
+    const updated = [{ id: Date.now(), text: newNote, date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }) }, ...notes];
+    setNotes(updated);
+    ccStore.set("care_notes", updated);
+    setNewNote("");
+  };
+
+  const addReminder = () => {
+    const updated = [...reminders, { ...newReminder, id: Date.now() }];
+    setReminders(updated);
+    ccStore.set("reminders", updated);
+    setShowAddReminder(false);
+    setNewReminder({ title: "", time: "09:00", repeat: "daily", icon: "🔔", category: "other" });
+  };
+
+  const removeReminder = id => { const updated = reminders.filter(r => r.id !== id); setReminders(updated); ccStore.set("reminders", updated); };
+
+  const lonelyDays = moodLog.slice(0, 7).filter(m => m.lonely).length;
+  const avgMood = moodLog.slice(0, 7).length ? (moodLog.slice(0, 7).reduce((s, m) => s + m.score, 0) / Math.min(moodLog.length, 7)).toFixed(1) : "—";
+
+  return (
+    <div style={{ minHeight: "100vh", background: "var(--cc-cream)", color: "var(--cc-text)" }}>
+      <div style={{ background: "white", borderBottom: "1px solid var(--cc-border)", padding: "16px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 50 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button onClick={() => onNavigate("cc-landing")} style={{ color: "var(--cc-muted)", fontSize: 13 }}>← Back</button>
+          <div style={{ fontFamily: "var(--cc-serif)", fontSize: 20, color: "var(--cc-text)", fontWeight: 600 }}>Caregiver Portal</div>
+        </div>
+        <div className="cc-tag cc-tag--violet">Care Plan Active</div>
+      </div>
+
+      <div style={{ maxWidth: 960, margin: "0 auto", padding: "28px 24px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+
+        {/* Alerts */}
+        {lonelyDays > 2 && (
+          <div style={{ gridColumn: "1/-1", background: "rgba(225,29,72,.06)", border: "1px solid rgba(225,29,72,.25)", borderRadius: 14, padding: "16px 20px", display: "flex", gap: 14, alignItems: "start" }}>
+            <CCIcon name="alert" size={20} color="var(--cc-rose)" />
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#be123c", marginBottom: 4 }}>Loneliness Alert</div>
+              <div style={{ fontSize: 14, color: "#9f1239", lineHeight: 1.5 }}>
+                {profile.name} has reported feeling lonely {lonelyDays} of the last 7 days. Consider scheduling a visit or family call. Average mood: {avgMood}/10.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Reminders management */}
+        <div className="cc-card" style={{ padding: 22, background: "white" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+            <div style={{ fontFamily: "var(--cc-serif)", fontSize: 18, color: "var(--cc-text)" }}>Reminders</div>
+            <button onClick={() => setShowAddReminder(true)} style={{ background: "var(--cc-indigo)", color: "white", borderRadius: 8, padding: "6px 12px", fontSize: 12, fontWeight: 600, border: "none", cursor: "pointer" }}>+ Add</button>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {reminders.map(r => (
+              <div key={r.id || r.title} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "#f9f8ff", borderRadius: 10, border: "1px solid var(--cc-border)" }}>
+                <span style={{ fontSize: 20 }}>{r.icon}</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "var(--cc-text)" }}>{r.title}</div>
+                  <div style={{ fontSize: 12, color: "var(--cc-muted)" }}>{r.time} · {r.repeat}</div>
+                </div>
+                <button onClick={() => removeReminder(r.id || r.title)} style={{ background: "none", color: "var(--cc-muted)", cursor: "pointer", padding: 4 }}>
+                  <CCIcon name="trash" size={14} color="var(--cc-muted)" />
+                </button>
+              </div>
+            ))}
+          </div>
+          {showAddReminder && (
+            <div style={{ marginTop: 16, padding: 16, background: "#f5f3ff", borderRadius: 12, border: "1px solid rgba(79,70,229,.15)" }}>
+              {[["Title","title","e.g. Morning Stretch"],["Time","time",""],["Repeat","repeat","daily / weekly"]].map(([l,k,p]) => (
+                <div key={k} style={{ marginBottom: 10 }}>
+                  <label style={{ fontSize: 12, color: "var(--cc-muted)", fontWeight: 600, display: "block", marginBottom: 4 }}>{l}</label>
+                  <input value={newReminder[k]} onChange={e => setNewReminder(r => ({...r, [k]: e.target.value}))} placeholder={p} type={k==="time"?"time":"text"} className="cc-input" style={{ padding: "9px 12px", fontSize: 13 }} />
+                </div>
+              ))}
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={addReminder} className="cc-btn cc-btn--primary" style={{ flex: 1, justifyContent: "center", padding: "9px" }}>Add</button>
+                <button onClick={() => setShowAddReminder(false)} style={{ flex: 1, background: "white", border: "1px solid var(--cc-border)", borderRadius: 100, color: "var(--cc-muted)", fontSize: 13, cursor: "pointer" }}>Cancel</button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Handoff Notes */}
+        <div className="cc-card" style={{ padding: 22, background: "white" }}>
+          <div style={{ fontFamily: "var(--cc-serif)", fontSize: 18, color: "var(--cc-text)", marginBottom: 14 }}>Care Notes</div>
+          <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+            <textarea value={newNote} onChange={e => setNewNote(e.target.value)} placeholder="Add a handoff note, observation, or care update…" rows={3} className="cc-input" style={{ flex: 1, resize: "none", lineHeight: 1.5 }} />
+          </div>
+          <button onClick={addNote} className="cc-btn cc-btn--primary" style={{ width: "100%", justifyContent: "center", padding: "10px", marginBottom: 14 }}>Save Note</button>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 260, overflow: "auto" }}>
+            {notes.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "28px 0", color: "var(--cc-muted)", fontSize: 14 }}>No notes yet.</div>
+            ) : notes.map(n => (
+              <div key={n.id} style={{ background: "#f9f8ff", border: "1px solid var(--cc-border)", borderRadius: 10, padding: "12px 14px" }}>
+                <div style={{ fontSize: 13, color: "var(--cc-text)", lineHeight: 1.6 }}>{n.text}</div>
+                <div style={{ fontSize: 11, color: "var(--cc-muted)", marginTop: 5 }}>{n.date} · {n.time}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Progress */}
+        <div className="cc-card" style={{ padding: 22, background: "white", gridColumn: "1/-1" }}>
+          <div style={{ fontFamily: "var(--cc-serif)", fontSize: 18, color: "var(--cc-text)", marginBottom: 16 }}>Progress Overview</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12 }}>
+            {[
+              { label:"Total Mood Logs",  value:moodLog.length,      color:"var(--cc-indigo)" },
+              { label:"Avg Mood Score",   value:`${avgMood}/10`,     color:"var(--cc-violet)" },
+              { label:"Low Mood Days",    value:moodLog.filter(m=>m.score<5).length, color:"var(--cc-rose)" },
+              { label:"High Mood Days",   value:moodLog.filter(m=>m.score>=8).length, color:"var(--cc-sage)" },
+            ].map(s => (
+              <div key={s.label} style={{ background: "#f9f8ff", border: "1px solid var(--cc-border)", borderRadius: 12, padding: "14px 12px", textAlign: "center" }}>
+                <div style={{ fontFamily: "var(--cc-serif)", fontSize: 32, color: s.color, lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontSize: 12, color: "var(--cc-muted)", marginTop: 5 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  
+// ── Standalone SentinelHaven App ──
+function SentinelHavenApp() {
+  const getInitView = () => {
+    const hash   = window.location.hash.replace('#','');
+    const params = new URLSearchParams(window.location.search);
+    return params.get('view') || hash || 'cc-landing';
+  };
+  const [view, setView] = useState(getInitView());
+
+  useEffect(() => {
+    window.history.replaceState(null, '', '#' + view);
+  }, [view]);
+
+  const navigate = (v) => {
+    if (v === 'gc-landing' || v === 'guardianscall') {
+      window.open('https://guardianscall.com', '_blank', 'noopener');
+      return;
+    }
+    setView(v);
+  };
+
+  return (
+    <>
+      <StandaloneStyles />
+      <LiveSupport />
+      {view === 'cc-landing'   && <CCLanding        onNavigate={navigate} />}
+      {view === 'cc-companion' && <CCCompanionApp    onNavigate={navigate} />}
+      {view === 'cc-family'    && <CCFamilyPortal    onNavigate={navigate} />}
+      {view === 'cc-caregiver' && <CCCaregiverPortal onNavigate={navigate} />}
+    </>
+  );
+}
+
+const _shRoot = ReactDOM.createRoot(document.getElementById('root'));
+_shRoot.render(React.createElement(SentinelHavenApp));
+
+  </script>
+
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        var s = document.getElementById('sh-splash');
+        if (s) { s.classList.add('out'); setTimeout(function(){ if(s.parentNode) s.parentNode.removeChild(s); }, 700); }
+      }, 700);
+    });
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault(); window._shInstall = e;
+    });
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function(){});
+    }
+  </script>
+</body>
+</html>

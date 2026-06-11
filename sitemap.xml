@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://guardianscall.com/</loc>                  <priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://guardianscall.com/dictionary</loc>        <priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://guardianscall.com/#cc-companion</loc>     <priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://guardianscall.com/#cc-family</loc>        <priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://guardianscall.com/#cc-caregiver</loc>     <priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://sentinelhaven.com/</loc>                  <priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://sentinelhaven.com/#cc-companion</loc>     <priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://sentinelhaven.com/#cc-family</loc>        <priority>0.8</priority><changefreq>weekly</changefreq></url>
+</urlset>

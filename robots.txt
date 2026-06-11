@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+# GuardiansCall main site
+Sitemap: https://guardianscall.com/sitemap.xml
+
+# SentinelHaven standalone
+Sitemap: https://sentinelhaven.com/sitemap.xml

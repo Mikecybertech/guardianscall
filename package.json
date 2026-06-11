@@ -1,0 +1,40 @@
+{
+  "name": "guardianscall-sentinelhaven",
+  "version": "2.0.0",
+  "private": true,
+  "description": "GuardiansCall + SentinelHaven H.A.V.E.N AI — Dual-platform accessibility and AI companion ecosystem",
+  "keywords": ["accessibility","ADA","TBI","PTSD","airport","caregiver","AI-companion","microsoft-teams","react","cognitive-support","loneliness","SentinelHaven","HAVEN"],
+  "author": "GuardiansCall <support@guardianscall.com>",
+  "license": "UNLICENSED",
+  "homepage": "https://guardianscall.com",
+  "scripts": {
+    "dev":          "vite",
+    "build":        "vite build",
+    "preview":      "vite preview",
+    "serve":        "npx serve . -l 3000",
+    "server:dev":   "node backend/server.js",
+    "start":        "concurrently \"npm run dev\" \"npm run server:dev\"",
+    "lint":         "eslint . --ext .jsx,.js",
+    "deploy:netlify":"npx netlify deploy --prod --dir .",
+    "deploy:vercel": "vercel --prod"
+  },
+  "dependencies": {
+    "react":     "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite":                 "^5.4.0",
+    "concurrently":         "^9.0.0"
+  },
+  "optionalDependencies": {
+    "express":    "^4.19.2",
+    "nodemailer": "^6.9.14",
+    "sqlite3":    "^5.1.7",
+    "node-fetch": "^3.3.2",
+    "dotenv":     "^16.4.5",
+    "cors":       "^2.8.5"
+  },
+  "engines": { "node": ">=18.0.0" },
+  "browserslist": [">1%","last 2 versions","not dead","not ie 11"]
+}
